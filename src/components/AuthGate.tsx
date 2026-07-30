@@ -47,18 +47,26 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
 
   // Auth Listener
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     // Check session on mount
-    supabase?.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         checkProfile(session.user.id);
       } else {
         setLoading(false);
       }
+    }).catch(err => {
+      console.error("Session fetch error:", err);
+      setLoading(false);
     });
 
     // Listen to changes
-    const { data: { subscription } } = supabase?.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         checkProfile(session.user.id);
@@ -67,7 +75,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
         setNeedsOnboarding(false);
         setLoading(false);
       }
-    }) ?? { data: { subscription: null } };
+    });
 
     return () => {
       subscription?.unsubscribe();
@@ -172,6 +180,40 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       setOnboardingLoading(false);
     }
   };
+
+  // Supabase Configuration Check
+  if (!supabase) {
+    return (
+      <div className="min-h-screen bg-[#faf9f6] text-[#222c26] dark:bg-[#111513] dark:text-[#eae6df] flex items-center justify-center p-4">
+        {/* Soft Ambient Glows */}
+        <div className="ambient-glow bg-[#cfe0d3] dark:bg-[#1c2721] top-[-100px] left-[-100px]" aria-hidden="true" />
+        <div className="ambient-glow bg-[#e7e5d3] dark:bg-[#28332c] bottom-[-150px] right-[-100px]" aria-hidden="true" />
+
+        <div className="w-full max-w-sm bg-card border border-border rounded-[32px] p-8 shadow-xl flex flex-col gap-6 text-center relative z-10">
+          <div className="w-12 h-12 bg-red-50 dark:bg-red-950/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-2">
+            <ShieldAlert className="w-6 h-6" />
+          </div>
+          <h1 className="text-xl font-bold tracking-tight font-serif text-red-500 font-bold">Konfigurationsfehler</h1>
+          <p className="text-xs text-foreground/70 leading-relaxed max-w-xs mx-auto">
+            Die Verbindung zu Supabase konnte nicht hergestellt werden. Bitte stelle sicher, dass du die Umgebungsvariablen in deinem <b>Vercel Dashboard</b> hinterlegt hast.
+          </p>
+          <div className="text-[10px] bg-background border border-border p-3.5 rounded-2xl text-left font-mono space-y-1.5 w-full">
+            <div className="flex justify-between">
+              <span className="font-bold text-foreground/70">NEXT_PUBLIC_SUPABASE_URL</span>
+              <span className="text-red-400 font-bold text-[9px] uppercase tracking-wider">Fehlt ❌</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-bold text-foreground/70">NEXT_PUBLIC_SUPABASE_ANON_KEY</span>
+              <span className="text-red-400 font-bold text-[9px] uppercase tracking-wider">Fehlt ❌</span>
+            </div>
+          </div>
+          <p className="text-[10px] text-foreground/50 leading-relaxed">
+            Füge diese beiden Variablen in den <b>Environment Variables</b> deines Vercel-Projekts hinzu, starte ein neues Deployment und lade die Seite neu.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // Loading Screen
   if (loading) {
