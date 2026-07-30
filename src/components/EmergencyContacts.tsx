@@ -71,20 +71,22 @@ export default function EmergencyContacts() {
         return;
       }
 
-      // 2. Fetch country helplines
+      // 2. Fetch country helplines (Don't throw if this fails, just fallback to empty array)
       const { data: hotlines, error: hotlinesErr } = await supabase
         .from("countries_hotlines")
         .select("*")
         .eq("country_code", profile.country);
 
-      if (hotlinesErr) throw hotlinesErr;
+      if (hotlinesErr) {
+        console.warn("Could not load regional hotlines:", hotlinesErr);
+      }
 
       // 3. Assemble primary partner contact
       const primaryContact: Contact = {
-        name: `${profile.partner_name} (Lieblingsmensch)`,
+        name: profile.partner_name ? `${profile.partner_name} (Lieblingsmensch)` : "Lieblingsmensch",
         role: `Deine engste Vertrauensperson. Antworte oder rufe an.`,
-        phone: profile.partner_phone,
-        sms: profile.partner_phone,
+        phone: profile.partner_phone || "",
+        sms: profile.partner_phone || "",
         isPrimary: true,
       };
 
@@ -95,8 +97,13 @@ export default function EmergencyContacts() {
         phone: h.phone,
       }));
 
-      // Combine
-      setContacts([primaryContact, ...mappedHotlines]);
+      // Combine (if DB hotlines are empty due to error or missing data, fallback to DE defaults for hotlines only)
+      if (mappedHotlines.length === 0) {
+        const defaultHelplines = DEFAULT_DE_CONTACTS.filter(c => !c.isPrimary);
+        setContacts([primaryContact, ...defaultHelplines]);
+      } else {
+        setContacts([primaryContact, ...mappedHotlines]);
+      }
     } catch (err) {
       console.error("Error loading contacts from database:", err);
       // Fallback is already DEFAULT_DE_CONTACTS
