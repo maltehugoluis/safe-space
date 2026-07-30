@@ -449,29 +449,21 @@ export default function JournalTracker() {
 
   return (
     <div className="w-full flex flex-col gap-8">
-      {/* Cloud Sync Status Header & Login Trigger */}
+      {/* Cloud Sync Status Header */}
       <div className="w-full p-4 rounded-3xl border border-border bg-card shadow-sm flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={`w-2.5 h-2.5 rounded-full ${user ? "bg-sage-500 animate-pulse" : "bg-beige-400"}`} />
+            <div className="w-2.5 h-2.5 rounded-full bg-sage-500 animate-pulse" />
             <span className="text-xs font-bold text-foreground/80">
-              {user ? `Verbunden: ${user.email}` : "Lokal gesichert (Offline-Modus)"}
+              {user ? `Cloud-Synchronisiert: ${user.email}` : "Cloud-Verbindung aktiv"}
             </span>
           </div>
 
           <button
-            onClick={() => (user ? handleSignOut() : setShowAuthForm(!showAuthForm))}
-            className="text-[10px] font-bold border border-border px-3 py-1.5 rounded-full bg-background hover:bg-sage-50 dark:hover:bg-sage-950 transition-all flex items-center gap-1"
+            onClick={handleSignOut}
+            className="text-[10px] font-bold border border-border px-3 py-1.5 rounded-full bg-background hover:bg-sage-50 dark:hover:bg-sage-950 transition-all flex items-center gap-1 cursor-pointer"
           >
-            {user ? (
-              <>
-                <LogOut className="w-3 h-3" /> Abmelden
-              </>
-            ) : (
-              <>
-                <LogIn className="w-3 h-3" /> Partner-Login
-              </>
-            )}
+            <LogOut className="w-3 h-3" /> Abmelden
           </button>
         </div>
 
@@ -481,71 +473,6 @@ export default function JournalTracker() {
             <Loader className="w-3.5 h-3.5 animate-spin" />
             <span>Synchronisiere mit Supabase...</span>
           </div>
-        )}
-
-        {/* Secure database notice */}
-        {!user && !showAuthForm && (
-          <p className="text-[10px] text-foreground/50 leading-relaxed">
-            Deine Notizen werden sicher auf diesem Gerät aufbewahrt. Melde dich an, um geteilte Notizen mit deinem Partner live zu synchronisieren.
-          </p>
-        )}
-
-        {/* Auth form toggle */}
-        {showAuthForm && !user && (
-          <form onSubmit={handleAuth} className="flex flex-col gap-3 border-t border-border pt-4 mt-1">
-            <h3 className="text-xs font-bold tracking-wide">
-              {isRegistering ? "Neuen Safe-Space erstellen" : "Mit Partner-Konto anmelden"}
-            </h3>
-
-            <div className="flex flex-col gap-2">
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="E-Mail-Adresse"
-                className="w-full text-xs p-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:border-sage-500"
-              />
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Passwort"
-                className="w-full text-xs p-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:border-sage-500"
-              />
-            </div>
-
-            {authError && (
-              <p className="text-[10px] font-semibold text-red-500 bg-red-50/50 dark:bg-red-950/20 p-2.5 rounded-xl border border-red-100 dark:border-red-950/30">
-                {authError}
-              </p>
-            )}
-
-            <div className="flex items-center gap-2">
-              <button
-                type="submit"
-                disabled={authLoading}
-                className="flex-1 py-2.5 rounded-xl bg-sage-600 text-white text-xs font-bold hover:bg-sage-700 transition-all flex items-center justify-center gap-1.5 shadow-sm"
-              >
-                {authLoading ? (
-                  <Loader className="w-3.5 h-3.5 animate-spin" />
-                ) : isRegistering ? (
-                  "Konto erstellen"
-                ) : (
-                  "Anmelden"
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsRegistering(!isRegistering)}
-                className="text-[10px] text-foreground/60 hover:underline px-2 py-1 font-semibold"
-              >
-                {isRegistering ? "Bereits ein Konto? Login" : "Noch kein Konto? Registrieren"}
-              </button>
-            </div>
-          </form>
         )}
       </div>
 

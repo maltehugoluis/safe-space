@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  /* Calming Sage Green Palette */
-  --color-sage-50: #f4f7f5;
-  --color-sage-100: #e6ede8;
-  --color-sage-200: #cfe0d3;
-  --color-sage-300: #aacab2;
-  --color-sage-400: #81ad8c;
-  --color-sage-500: #62916e;
-  --color-sage-600: #4c7456;
-  --color-sage-700: #3f5d47;
-  --color-sage-800: #354c3b;
-  --color-sage-900: #2d3f32;
-  --color-sage-950: #17221b;
+  /* Calming dynamic theme overrides mapping to active CSS variables */
+  --color-sage-50: var(--color-primary-light);
+  --color-sage-100: var(--color-primary-light);
+  --color-sage-200: var(--color-primary-light);
+  --color-sage-300: var(--color-primary-light);
+  --color-sage-400: var(--color-primary);
+  --color-sage-500: var(--color-primary);
+  --color-sage-600: var(--color-primary);
+  --color-sage-700: var(--color-primary-dark);
+  --color-sage-800: var(--color-primary-dark);
+  --color-sage-900: var(--color-primary-dark);
+  --color-sage-950: var(--color-primary-dark);
 
   /* Calming Cream & Sand Beige Palette */
   --color-beige-50: #fafaf7;
@@ -27,36 +27,174 @@
   --color-beige-900: #4f4631;
   --color-beige-950: #2d2719;
 
-  /* Custom Soft Slates for Comfort */
   --color-slate-920: #131715;
   --color-slate-950: #0a0d0c;
 }
 
-:root {
-  --background: #faf9f6; /* Warm alabaster beige */
-  --foreground: #222c26; /* Soft forest charcoal */
-  --card: #f3f0e8; /* Soft clay tint card */
+/* 1. Sage (Salbei) - Default */
+.theme-sage {
+  --background: #faf9f6;
+  --foreground: #222c26;
+  --card: #f3f0e8;
   --card-foreground: #222c26;
   --border: #e6e3da;
   --ring: #62916e;
+
+  --color-primary: #62916e;
+  --color-primary-light: #e6ede8;
+  --color-primary-dark: #3f5d47;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #111513; /* Soft dark forest-slate */
-    --foreground: #eae6df; /* Warm cream white */
-    --card: #19201c; /* Soft charcoal-sage card */
+  .theme-sage {
+    --background: #111513;
+    --foreground: #eae6df;
+    --card: #19201c;
     --card-foreground: #eae6df;
     --border: #28332c;
     --ring: #81ad8c;
+
+    --color-primary: #81ad8c;
+    --color-primary-light: #1c2721;
+    --color-primary-dark: #cfe0d3;
   }
+}
+
+/* 2. Lavender (Lavendel) */
+.theme-lavender {
+  --background: #fcfbfa;
+  --foreground: #2c2738;
+  --card: #f0edf3;
+  --card-foreground: #2c2738;
+  --border: #e3dfeb;
+  --ring: #856ea8;
+
+  --color-primary: #856ea8;
+  --color-primary-light: #f2eff8;
+  --color-primary-dark: #5c477e;
+}
+
+@media (prefers-color-scheme: dark) {
+  .theme-lavender {
+    --background: #141218;
+    --foreground: #ece6f0;
+    --card: #1d1a24;
+    --card-foreground: #ece6f0;
+    --border: #2e2938;
+    --ring: #ab99ca;
+
+    --color-primary: #ab99ca;
+    --color-primary-light: #211c2e;
+    --color-primary-dark: #e7e0f2;
+  }
+}
+
+/* 3. Rose (Altrosa) */
+.theme-rose {
+  --background: #faf7f7;
+  --foreground: #38272b;
+  --card: #f3edee;
+  --card-foreground: #38272b;
+  --border: #ebe0e2;
+  --ring: #b5717f;
+
+  --color-primary: #b5717f;
+  --color-primary-light: #f9f0f2;
+  --color-primary-dark: #844350;
+}
+
+@media (prefers-color-scheme: dark) {
+  .theme-rose {
+    --background: #181214;
+    --foreground: #f0e6e7;
+    --card: #241a1d;
+    --card-foreground: #f0e6e7;
+    --border: #38292c;
+    --ring: #d39ba7;
+
+    --color-primary: #d39ba7;
+    --color-primary-light: #2e1b20;
+    --color-primary-dark: #f4e1e4;
+  }
+}
+
+/* 4. Peach (Pfirsich) */
+.theme-peach {
+  --background: #faf8f5;
+  --foreground: #382b22;
+  --card: #f3eee6;
+  --card-foreground: #382b22;
+  --border: #ebe2d5;
+  --ring: #c08a65;
+
+  --color-primary: #c08a65;
+  --color-primary-light: #fbf2eb;
+  --color-primary-dark: #8a5833;
+}
+
+@media (prefers-color-scheme: dark) {
+  .theme-peach {
+    --background: #181411;
+    --foreground: #f0e8e1;
+    --card: #241e19;
+    --card-foreground: #f0e8e1;
+    --border: #382f28;
+    --ring: #dba783;
+
+    --color-primary: #dba783;
+    --color-primary-light: #2e2118;
+    --color-primary-dark: #f6e5d8;
+  }
+}
+
+/* 5. Blue (Ozeanblau) */
+.theme-blue {
+  --background: #f5f8fa;
+  --foreground: #222b38;
+  --card: #e6edf3;
+  --card-foreground: #222b38;
+  --border: #d5e2eb;
+  --ring: #5c86b5;
+
+  --color-primary: #5c86b5;
+  --color-primary-light: #edf4f9;
+  --color-primary-dark: #3a5f8a;
+}
+
+@media (prefers-color-scheme: dark) {
+  .theme-blue {
+    --background: #111518;
+    --foreground: #e1e8f0;
+    --card: #192025;
+    --card-foreground: #e1e8f0;
+    --border: #28333b;
+    --ring: #8cb0d9;
+
+    --color-primary: #8cb0d9;
+    --color-primary-light: #18222a;
+    --color-primary-dark: #cfe1f2;
+  }
+}
+
+:root {
+  /* Default to sage variables if no theme class is applied */
+  --background: #faf9f6;
+  --foreground: #222c26;
+  --card: #f3f0e8;
+  --card-foreground: #222c26;
+  --border: #e6e3da;
+  --ring: #62916e;
+  
+  --color-primary: #62916e;
+  --color-primary-light: #e6ede8;
+  --color-primary-dark: #3f5d47;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  transition: background-color 0.5s ease, color 0.5s ease;
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
 
 /* Custom calming scrollbar */
