@@ -31,6 +31,20 @@
   --color-slate-950: #0a0d0c;
 }
 
+:root {
+  /* Default to sage variables if no theme class is applied */
+  --background: #faf9f6;
+  --foreground: #222c26;
+  --card: #f3f0e8;
+  --card-foreground: #222c26;
+  --border: #e6e3da;
+  --ring: #62916e;
+  
+  --color-primary: #62916e;
+  --color-primary-light: #e6ede8;
+  --color-primary-dark: #3f5d47;
+}
+
 /* 1. Sage (Salbei) - Default */
 .theme-sage {
   --background: #faf9f6;
@@ -176,19 +190,7 @@
   }
 }
 
-:root {
-  /* Default to sage variables if no theme class is applied */
-  --background: #faf9f6;
-  --foreground: #222c26;
-  --card: #f3f0e8;
-  --card-foreground: #222c26;
-  --border: #e6e3da;
-  --ring: #62916e;
-  
-  --color-primary: #62916e;
-  --color-primary-light: #e6ede8;
-  --color-primary-dark: #3f5d47;
-}
+
 
 body {
   background-color: var(--background);
