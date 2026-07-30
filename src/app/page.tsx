@@ -17,7 +17,6 @@ import SupporterNudge from "@/components/SupporterNudge";
 import SupporterLetters from "@/components/SupporterLetters";
 import SharedThoughts from "@/components/SharedThoughts";
 import ProgressiveRelaxation from "@/components/ProgressiveRelaxation";
-import SomaticShake from "@/components/SomaticShake";
 import { supabase } from "@/lib/supabase";
 
 type Tab = "ruhe" | "safespace" | "journal" | "hilfe" | "settings" | "nudge" | "briefe" | "shared";
@@ -113,9 +112,6 @@ export default function Home() {
 
                 {/* Progressive Muscle Relaxation */}
                 <ProgressiveRelaxation />
-
-                {/* Somatic Stress Shake */}
-                <SomaticShake />
 
                 {/* Thought Shredder */}
                 <ThoughtShredder />
