@@ -449,33 +449,13 @@ export default function JournalTracker() {
 
   return (
     <div className="w-full flex flex-col gap-8">
-      {/* Cloud Sync Status Header */}
-      <div className="w-full p-4 rounded-3xl border border-border bg-card shadow-sm flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-sage-500 animate-pulse" />
-            <span className="text-xs font-bold text-foreground/80">
-              {user ? `Cloud-Synchronisiert: ${user.email}` : "Cloud-Verbindung aktiv"}
-            </span>
-          </div>
-
-          <button
-            onClick={handleSignOut}
-            className="text-[10px] font-bold border border-border px-3 py-1.5 rounded-full bg-background hover:bg-sage-50 dark:hover:bg-sage-950 transition-all flex items-center gap-1 cursor-pointer"
-          >
-            <LogOut className="w-3 h-3" /> Abmelden
-          </button>
-        </div>
-
         {/* Sync loading status */}
         {dataLoading && (
-          <div className="flex items-center gap-1.5 text-[10px] text-foreground/50 italic">
+          <div className="flex items-center gap-1.5 text-[10px] text-foreground/50 italic px-2">
             <Loader className="w-3.5 h-3.5 animate-spin" />
             <span>Synchronisiere mit Supabase...</span>
           </div>
         )}
-      </div>
-
       {/* Mood Tracker Component */}
       <div className="flex flex-col gap-3 bg-card border border-border rounded-3xl p-6 shadow-sm">
         <div>

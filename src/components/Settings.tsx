@@ -150,18 +150,30 @@ export default function Settings() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between border-b border-border pb-4">
+      {/* Cloud Sync Status Header */}
+      <div className="w-full p-4 rounded-3xl border border-border bg-card shadow-sm flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-sage-500 animate-pulse" />
+            <span className="text-xs font-bold text-foreground/80">
+              {user ? `Cloud-Synchronisiert: ${user.email}` : "Cloud-Verbindung aktiv"}
+            </span>
+          </div>
+
+          <button
+            onClick={handleSignOut}
+            className="text-[10px] font-bold border border-border px-3 py-1.5 rounded-full bg-background hover:bg-red-50 hover:border-red-200 hover:text-red-600 dark:hover:bg-red-950/30 transition-all flex items-center gap-1 cursor-pointer"
+          >
+            <LogOut className="w-3 h-3" /> Abmelden
+          </button>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between border-b border-border pb-2 mt-2">
         <h2 className="text-xl font-bold tracking-tight text-foreground/90 font-serif flex items-center gap-2">
           <SettingsIcon className="w-5 h-5 text-sage-600 dark:text-sage-400" />
           Einstellungen
         </h2>
-        <button
-          onClick={handleSignOut}
-          className="p-2 rounded-full border border-border bg-background text-foreground/60 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
-          title="Abmelden"
-        >
-          <LogOut className="w-4 h-4" />
-        </button>
       </div>
 
       <form onSubmit={handleSave} className="flex flex-col gap-8">
