@@ -11,6 +11,8 @@ import JournalTracker from "@/components/JournalTracker";
 import EmergencySignal from "@/components/EmergencySignal";
 import EmergencyContacts from "@/components/EmergencyContacts";
 import Settings from "@/components/Settings";
+import ThoughtShredder from "@/components/ThoughtShredder";
+import GoodMomentsJar from "@/components/GoodMomentsJar";
 
 type Tab = "ruhe" | "safespace" | "journal" | "hilfe" | "settings";
 
@@ -63,6 +65,9 @@ export default function Home() {
 
                 {/* Grounding Section */}
                 <GroundingGuide />
+
+                {/* Thought Shredder */}
+                <ThoughtShredder />
               </div>
             )}
 
@@ -73,6 +78,9 @@ export default function Home() {
                 
                 {/* Memory gallery */}
                 <MemoryGallery />
+
+                {/* Jar of Good Moments */}
+                <GoodMomentsJar />
               </div>
             )}
 
