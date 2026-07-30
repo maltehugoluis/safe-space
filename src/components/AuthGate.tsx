@@ -129,6 +129,14 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       if (error) throw error;
 
       if (data) {
+        // Sync email if it was missing (for older accounts)
+        if (!data.email) {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user?.email) {
+            await supabase.from("profiles").update({ email: session.user.email }).eq("id", userId);
+            data.email = session.user.email;
+          }
+        }
         setProfile(data as Profile);
         setNeedsOnboarding(false);
       } else {
