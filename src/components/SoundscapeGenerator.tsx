@@ -19,7 +19,7 @@ export default function SoundscapeGenerator() {
     { id: "rain", name: "Sanfter Regen", icon: <CloudRain className="w-5 h-5 text-blue-400" />, active: false, volume: 0.5 },
     { id: "waves", name: "Meeresrauschen", icon: <Waves className="w-5 h-5 text-teal-400" />, active: false, volume: 0.5 },
     { id: "fire", name: "Lagerfeuer", icon: <Flame className="w-5 h-5 text-amber-500" />, active: false, volume: 0.5 },
-    { id: "brown", name: "Tiefe Ruhe (Brownian)", icon: <Radio className="w-5 h-5 text-purple-400" />, active: false, volume: 0.5 },
+    { id: "brown", name: "Tiefe Ruhe", icon: <Radio className="w-5 h-5 text-purple-400" />, active: false, volume: 0.5 },
   ]);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -258,31 +258,36 @@ export default function SoundscapeGenerator() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {tracks.map((track) => (
           <motion.div
             key={track.id}
             whileTap={{ scale: 0.98 }}
             className={`p-4 rounded-2xl border transition-all flex flex-col gap-3 ${
               track.active
-                ? "bg-sage-50/60 dark:bg-sage-950/20 border-sage-500/50 shadow-xs"
-                : "bg-background border-border/70 hover:border-border"
+                ? "bg-sage-50/70 dark:bg-sage-950/30 border-sage-500/60 shadow-xs"
+                : "bg-background border-border/80 hover:border-border"
             }`}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-card border border-border/50">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="p-2.5 rounded-xl bg-card border border-border/50 shrink-0">
                   {track.icon}
                 </div>
-                <span className="text-sm font-bold text-foreground/90">{track.name}</span>
+                <div className="flex flex-col min-w-0 flex-1">
+                  <span className="text-sm font-bold text-foreground/90 truncate">{track.name}</span>
+                  <span className="text-[11px] text-foreground/50 truncate">
+                    {track.id === "rain" ? "Prasseln" : track.id === "waves" ? "Brandung" : track.id === "fire" ? "Knistern" : "Rauschen"}
+                  </span>
+                </div>
               </div>
 
               <button
                 onClick={() => toggleTrack(track.id)}
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${
                   track.active
                     ? "bg-sage-600 text-white shadow-xs"
-                    : "bg-muted text-foreground/60 hover:bg-muted/80"
+                    : "bg-muted text-foreground/70 hover:bg-muted/80 hover:text-foreground"
                 }`}
               >
                 {track.active ? <Square className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 ml-0.5" />}
@@ -293,9 +298,9 @@ export default function SoundscapeGenerator() {
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                className="flex items-center gap-2 pt-1"
+                className="flex items-center gap-2.5 pt-1 border-t border-sage-200/50 dark:border-sage-900/50"
               >
-                <VolumeX className="w-3.5 h-3.5 text-foreground/40" />
+                <VolumeX className="w-3.5 h-3.5 text-foreground/40 shrink-0" />
                 <input
                   type="range"
                   min="0"
@@ -305,7 +310,7 @@ export default function SoundscapeGenerator() {
                   onChange={(e) => handleVolumeChange(track.id, parseFloat(e.target.value))}
                   className="w-full h-1.5 bg-border rounded-lg appearance-none cursor-pointer accent-sage-600"
                 />
-                <Volume2 className="w-3.5 h-3.5 text-foreground/60" />
+                <Volume2 className="w-3.5 h-3.5 text-foreground/60 shrink-0" />
               </motion.div>
             )}
           </motion.div>
