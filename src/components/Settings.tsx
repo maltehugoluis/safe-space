@@ -22,6 +22,8 @@ type Profile = {
   additional_partners?: AdditionalPartner[];
   country: string;
   favorite_color: string;
+  pending_supporters?: string[];
+  approved_supporters?: string[];
 };
 
 const COLOR_THEMES = [
@@ -48,6 +50,8 @@ export default function Settings() {
   const [additionalPartners, setAdditionalPartners] = useState<AdditionalPartner[]>([]);
   const [appMode, setAppMode] = useState<"receiver" | "supporter">("receiver");
   const [linkedUserEmail, setLinkedUserEmail] = useState("");
+  const [pendingSupporters, setPendingSupporters] = useState<string[]>([]);
+  const [approvedSupporters, setApprovedSupporters] = useState<string[]>([]);
 
   useEffect(() => {
     loadProfile();
@@ -76,6 +80,8 @@ export default function Settings() {
         setAdditionalPartners(data.additional_partners || []);
         setAppMode(data.app_mode || "receiver");
         setLinkedUserEmail(data.linked_user_email || "");
+        setPendingSupporters(data.pending_supporters || []);
+        setApprovedSupporters(data.approved_supporters || []);
       }
     } catch (err) {
       console.error("Error loading profile:", err);
@@ -155,11 +161,50 @@ export default function Settings() {
       const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
       if (error) throw error;
       
+      if (appMode === "supporter" && linkedUserEmail.trim() && user.email) {
+        const { error: rpcError } = await supabase.rpc("request_connection", { 
+          target_email: linkedUserEmail.trim(),
+          requester_email: user.email
+        });
+        if (rpcError) console.error("Error sending connection request:", rpcError);
+      }
+
       // Reload to instantly show the new tabs
       window.location.reload();
     } catch (err) {
       console.error("Error saving mode:", err);
       setSavingMode(false);
+    }
+  };
+
+  const handleAcceptConnection = async (email: string) => {
+    if (!supabase) return;
+    try {
+      await supabase.rpc("accept_connection", { requester_email: email });
+      setPendingSupporters(pendingSupporters.filter(e => e !== email));
+      setApprovedSupporters([...approvedSupporters, email]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRejectConnection = async (email: string) => {
+    if (!supabase) return;
+    try {
+      await supabase.rpc("reject_connection", { requester_email: email });
+      setPendingSupporters(pendingSupporters.filter(e => e !== email));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRemoveConnection = async (email: string) => {
+    if (!supabase) return;
+    try {
+      await supabase.rpc("remove_connection", { requester_email: email });
+      setApprovedSupporters(approvedSupporters.filter(e => e !== email));
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -301,6 +346,69 @@ export default function Settings() {
             </AnimatePresence>
           </div>
         </section>
+
+        {/* Connection Requests (Only in Receiver Mode) */}
+        <AnimatePresence>
+          {appMode === "receiver" && (pendingSupporters.length > 0 || approvedSupporters.length > 0) && (
+            <motion.section 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col gap-4 overflow-hidden"
+            >
+              <h3 className="text-sm font-bold text-foreground/80 flex items-center gap-1.5 border-b border-border pb-2">
+                <Globe className="w-4 h-4 text-sage-500" /> Zugelassene Supporter
+              </h3>
+
+              <div className="flex flex-col gap-4">
+                {pendingSupporters.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <p className="text-xs font-bold text-rose-500">Neue Anfragen:</p>
+                    {pendingSupporters.map(email => (
+                      <div key={email} className="flex flex-col md:flex-row md:items-center justify-between gap-2 p-3 rounded-xl bg-background border border-border">
+                        <span className="text-sm font-medium">{email}</span>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleAcceptConnection(email)}
+                            className="bg-sage-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:bg-sage-700 shadow-sm"
+                          >
+                            Zulassen
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRejectConnection(email)}
+                            className="bg-background text-foreground/60 border border-border px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:bg-red-50 hover:text-red-500 hover:border-red-200"
+                          >
+                            Ablehnen
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {approvedSupporters.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <p className="text-xs font-bold text-foreground/60">Aktive Supporter:</p>
+                    {approvedSupporters.map(email => (
+                      <div key={email} className="flex items-center justify-between gap-2 p-3 rounded-xl bg-background border border-border">
+                        <span className="text-sm font-medium">{email}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveConnection(email)}
+                          className="text-foreground/40 hover:text-red-500 transition-colors p-1"
+                          title="Supporter entfernen"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
 
         {/* Personal Details */}
         <section className="bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col gap-4">

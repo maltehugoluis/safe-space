@@ -16,10 +16,42 @@ export default function SharedThoughts({ linkedEmail }: { linkedEmail: string })
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<"loading" | "approved" | "pending" | "none" | "error">("loading");
 
   useEffect(() => {
-    fetchSharedThoughts();
+    checkStatusAndFetch();
   }, [linkedEmail]);
+
+  const checkStatusAndFetch = async () => {
+    if (!supabase || !linkedEmail) return;
+    setLoading(true);
+    setConnectionStatus("loading");
+    setError(null);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.email) throw new Error("No session");
+
+      const { data: status, error: statusError } = await supabase.rpc("check_connection_status", {
+        target_email: linkedEmail,
+        requester_email: session.user.email
+      });
+
+      if (statusError) throw statusError;
+
+      setConnectionStatus(status as any);
+
+      if (status === "approved") {
+        await fetchSharedThoughts();
+      }
+    } catch (err) {
+      console.error(err);
+      setConnectionStatus("error");
+      setError("Verbindungsstatus konnte nicht geprüft werden.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchSharedThoughts = async () => {
     if (!supabase) return;
@@ -42,8 +74,6 @@ export default function SharedThoughts({ linkedEmail }: { linkedEmail: string })
     } catch (err: any) {
       console.error("Error fetching shared thoughts:", err);
       setError("Die Gedanken konnten nicht geladen werden.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -68,6 +98,20 @@ export default function SharedThoughts({ linkedEmail }: { linkedEmail: string })
       ) : error ? (
         <div className="text-center py-12 text-rose-500 text-sm font-bold">
           {error}
+        </div>
+      ) : connectionStatus === "pending" ? (
+        <div className="flex flex-col items-center justify-center gap-3 py-16 px-4 text-center bg-card rounded-3xl border border-border">
+          <Loader className="w-8 h-8 text-sage-500 animate-spin" />
+          <p className="text-sm font-bold text-foreground/80">Warte auf Bestätigung...</p>
+          <p className="text-xs text-foreground/60">
+            Deine Freundin muss deine Anfrage in ihren Einstellungen erst annehmen, bevor du ihre Gedanken sehen kannst.
+          </p>
+        </div>
+      ) : connectionStatus !== "approved" ? (
+        <div className="flex flex-col items-center justify-center gap-3 py-16 px-4 text-center bg-card rounded-3xl border border-border text-foreground/50">
+          <Heart className="w-8 h-8" />
+          <p className="text-sm font-bold">Nicht verbunden</p>
+          <p className="text-xs">Aktiviere eine Verbindung in den Einstellungen.</p>
         </div>
       ) : entries.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 py-16 px-4 text-center bg-card rounded-3xl border border-border">
