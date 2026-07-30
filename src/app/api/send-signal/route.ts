@@ -9,15 +9,17 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: false, error: "Topic is required" }, { status: 400 });
       }
 
-      // Send post request to ntfy.sh from the server to bypass browser CORS completely
-      const res = await fetch(`https://ntfy.sh/${topic.trim()}`, {
+      // Send parameters as query string parameters. Emojis and other non-ASCII characters
+      // in HTTP headers throw a TypeError (ERR_INVALID_CHAR) in Node.js undici/fetch.
+      const queryParams = new URLSearchParams({
+        title: "Safe Space Signal ❤️",
+        priority: "5",
+        tags: "heart,rotating_light",
+      });
+
+      const res = await fetch(`https://ntfy.sh/${topic.trim()}?${queryParams.toString()}`, {
         method: "POST",
         body: "Ich brauche dich gerade. Bitte melde dich bei mir oder komm vorbei. Ich finde keine Worte.",
-        headers: {
-          "Title": "Safe Space Signal ❤️",
-          "Priority": "5", // Max priority (vibrates & sound)
-          "Tags": "heart,rotating_light",
-        },
       });
 
       if (!res.ok) {
