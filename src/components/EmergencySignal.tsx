@@ -152,8 +152,14 @@ export default function EmergencySignal() {
   return (
     <div className="w-full bg-card/60 backdrop-blur-xl border border-border/60 rounded-[2rem] p-8 shadow-sm flex flex-col items-center relative overflow-hidden">
       {/* Decorative background glow for the whole card */}
-      <div className="absolute -top-24 -right-24 w-64 h-64 bg-sage-400/10 dark:bg-sage-500/10 rounded-full blur-[80px] pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-sage-300/10 dark:bg-sage-400/10 rounded-full blur-[80px] pointer-events-none" />
+      <div 
+        className="absolute -top-24 -right-24 w-64 h-64 pointer-events-none" 
+        style={{ background: "radial-gradient(circle, rgba(var(--color-sage-400), 0.15) 0%, transparent 70%)" }}
+      />
+      <div 
+        className="absolute -bottom-24 -left-24 w-64 h-64 pointer-events-none" 
+        style={{ background: "radial-gradient(circle, rgba(var(--color-sage-300), 0.15) 0%, transparent 70%)" }}
+      />
 
       {/* Settings trigger */}
       <div className="w-full flex justify-end mb-2 relative z-10">
@@ -197,8 +203,8 @@ export default function EmergencySignal() {
               </AnimatePresence>
 
               {/* Progress visual filling ring wrapper */}
-              <div className="absolute inset-2">
-                <svg className="w-full h-full -rotate-90 drop-shadow-md">
+              <div className="absolute inset-2 pointer-events-none">
+                <svg className="w-full h-full -rotate-90">
                   <circle
                     cx="104"
                     cy="104"
@@ -234,7 +240,10 @@ export default function EmergencySignal() {
               >
                 {/* Internal gradient glow when holding */}
                 {isHolding && status === "idle" && (
-                  <div className="absolute inset-0 bg-gradient-to-b from-sage-400/20 to-transparent opacity-50 animate-pulse pointer-events-none" />
+                  <div 
+                    className="absolute inset-0 opacity-50 animate-pulse pointer-events-none" 
+                    style={{ background: "radial-gradient(circle at top, rgba(var(--color-sage-400), 0.3) 0%, transparent 80%)" }}
+                  />
                 )}
 
                 {status === "idle" && (
@@ -242,8 +251,8 @@ export default function EmergencySignal() {
                     <Heart
                       className={`w-14 h-14 mb-2 transition-all duration-300 ${
                         isHolding 
-                          ? "text-sage-600 dark:text-sage-400 scale-[1.15] fill-sage-600 dark:fill-sage-400 drop-shadow-md" 
-                          : "text-sage-500 dark:text-sage-400 drop-shadow-sm"
+                          ? "text-sage-600 dark:text-sage-400 scale-[1.15] fill-sage-600 dark:fill-sage-400" 
+                          : "text-sage-500 dark:text-sage-400"
                       }`}
                     />
                     <span className={`text-[10px] uppercase tracking-[0.2em] font-bold text-center px-4 transition-colors ${
