@@ -611,7 +611,7 @@ export default function JournalTracker() {
                       {entry.user_id && user && entry.user_id !== user.id && (
                         <span className="text-[9px] px-2 py-0.5 rounded-full bg-sage-100 text-sage-800 dark:bg-sage-950/40 dark:text-sage-400 font-bold border border-sage-200 dark:border-sage-800 flex items-center gap-0.5">
                           <UserCheck className="w-2.5 h-2.5" />
-                          Partner
+                          Bezugsperson
                         </span>
                       )}
                     </div>
