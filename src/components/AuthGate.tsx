@@ -399,7 +399,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
           {/* Progress Header */}
           <div className="flex justify-between items-center text-[10px] text-foreground/50 uppercase tracking-widest font-bold">
             <span>Einrichtung</span>
-            <span>Schritt {onboardingStep} von 4</span>
+            <span>Schritt {onboardingStep} von 3</span>
           </div>
 
           <form onSubmit={handleSaveOnboarding} className="flex flex-col gap-6">
@@ -543,41 +543,15 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
                 </motion.div>
               )}
 
-              {onboardingStep === 4 && (
-                <motion.div
-                  key="step-4"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="text-center py-4 flex flex-col items-center gap-4"
-                >
-                  <div className="w-16 h-16 bg-sage-100 dark:bg-sage-950/40 text-sage-600 dark:text-sage-400 rounded-full flex items-center justify-center">
-                    <Check className="w-8 h-8 stroke-[3]" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold font-serif">Alles bereit!</h2>
-                    <p className="text-xs text-foreground/60 leading-relaxed mt-2 max-w-xs">
-                      Dein sicherer Rückzugsort wurde konfiguriert. Du kannst ihn jetzt betreten.
-                    </p>
-                  </div>
-                  
-                  <div className="w-full text-left p-4 rounded-2xl border border-border bg-background/55 text-[11px] leading-relaxed text-foreground/75 space-y-1">
-                    <div><b>Name:</b> {userName}</div>
-                    <div><b>Lieblingsmensch:</b> {partnerName} ({partnerPhone})</div>
-                    <div><b>Land:</b> {country === "DE" ? "Deutschland" : country === "AT" ? "Österreich" : "Schweiz"}</div>
-                    <div><b>Farbe:</b> {COLOR_THEMES.find(c => c.id === favoriteColor)?.name}</div>
-                  </div>
-                </motion.div>
-              )}
             </AnimatePresence>
 
             {/* Navigation buttons */}
             <div className="flex justify-between items-center border-t border-border pt-4">
-              {onboardingStep > 1 && onboardingStep < 4 ? (
+              {onboardingStep > 1 ? (
                 <button
                   type="button"
                   onClick={() => setOnboardingStep((prev) => prev - 1)}
-                  className="flex items-center gap-1.5 text-xs font-semibold hover:underline"
+                  className="flex items-center gap-1.5 text-xs font-semibold hover:underline cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" /> Zurück
                 </button>
@@ -585,7 +559,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
                 <div />
               )}
 
-              {onboardingStep < 4 ? (
+              {onboardingStep < 3 ? (
                 <button
                   type="button"
                   disabled={
@@ -593,7 +567,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
                     (onboardingStep === 2 && (!partnerPhone || !country))
                   }
                   onClick={() => setOnboardingStep((prev) => prev + 1)}
-                  className="bg-sage-600 hover:bg-sage-700 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center gap-1.5 shadow-sm disabled:opacity-40 disabled:pointer-events-none transition-all ml-auto"
+                  className="bg-sage-600 hover:bg-sage-700 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center gap-1.5 shadow-sm disabled:opacity-40 disabled:pointer-events-none transition-all ml-auto cursor-pointer"
                 >
                   Weiter <ArrowRight className="w-4 h-4" />
                 </button>
@@ -601,12 +575,12 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
                 <button
                   type="submit"
                   disabled={onboardingLoading}
-                  className="w-full bg-sage-600 hover:bg-sage-700 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-40 transition-all"
+                  className="bg-sage-600 hover:bg-sage-700 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-40 transition-all cursor-pointer ml-auto"
                 >
                   {onboardingLoading ? (
                     <Loader className="w-4 h-4 animate-spin" />
                   ) : (
-                    "Safe Space betreten"
+                    "Konto einrichten"
                   )}
                 </button>
               )}
