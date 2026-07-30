@@ -17,7 +17,7 @@ export default function ThoughtShredder() {
     setTimeout(() => {
       setText("");
       setIsShredding(false);
-    }, 1500);
+    }, 2500);
   };
 
   return (
@@ -38,11 +38,11 @@ export default function ThoughtShredder() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ 
-                opacity: 0, 
-                y: 20, 
-                scale: 0.9, 
-                filter: "blur(10px)",
-                transition: { duration: 0.8, ease: "easeIn" }
+                opacity: [1, 1, 0], 
+                y: [0, -10, -30], 
+                scale: [1, 0.95, 0.8], 
+                filter: ["blur(0px) brightness(1)", "blur(2px) brightness(1.5)", "blur(8px) brightness(0.5) grayscale(100%)"],
+                transition: { duration: 1.8, ease: "easeIn" }
               }}
               className="absolute inset-0 w-full h-full"
             >
@@ -63,37 +63,51 @@ export default function ThoughtShredder() {
           ) : (
             <motion.div
               key="particles"
-              initial={{ opacity: 0 }}
+              initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
             >
               <div className="relative w-full h-full">
-                {/* Shred particles animation */}
-                {[...Array(15)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ 
-                      opacity: 1, 
-                      y: 0, 
-                      x: `${(i / 15) * 100}%`,
-                      rotate: 0,
-                      scale: 1 
-                    }}
-                    animate={{ 
-                      opacity: 0, 
-                      y: 100 + Math.random() * 50, 
-                      rotate: (Math.random() - 0.5) * 360,
-                      scale: 0 
-                    }}
-                    transition={{ 
-                      duration: 1 + Math.random() * 0.5, 
-                      ease: "easeOut" 
-                    }}
-                    className="absolute top-0 w-4 h-12 bg-border rounded-sm"
-                    style={{ left: `${(i / 15) * 100}%` }}
-                  />
-                ))}
+                {/* Fire / Ash particles animation */}
+                {[...Array(40)].map((_, i) => {
+                  const size = Math.random() * 8 + 4;
+                  const isAsh = Math.random() > 0.5;
+                  const colors = isAsh 
+                    ? ["#555555", "#333333", "#111111"] 
+                    : ["#ffb347", "#ff5500", "#ff0000"];
+                  
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ 
+                        opacity: 0, 
+                        y: 100 + Math.random() * 20, 
+                        x: `${5 + Math.random() * 90}%`,
+                        scale: 0.5 
+                      }}
+                      animate={{ 
+                        opacity: [0, 1, 0], 
+                        y: -20 - Math.random() * 120, 
+                        x: `${5 + Math.random() * 90 + (Math.random() - 0.5) * 30}%`,
+                        scale: [0.5, 1.5, 0],
+                        backgroundColor: colors
+                      }}
+                      transition={{ 
+                        duration: 1.5 + Math.random() * 1, 
+                        ease: "easeOut",
+                        delay: Math.random() * 0.4
+                      }}
+                      className="absolute rounded-full mix-blend-screen dark:mix-blend-lighten"
+                      style={{ 
+                        width: size, 
+                        height: size,
+                        boxShadow: isAsh ? "none" : "0 0 12px 3px rgba(255,85,0,0.6)",
+                        bottom: 0
+                      }}
+                    />
+                  );
+                })}
               </div>
             </motion.div>
           )}
