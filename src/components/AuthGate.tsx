@@ -84,6 +84,22 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // Synchronize body class with active favorite color theme
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Clean up existing theme classes on body
+    const classes = Array.from(document.body.classList);
+    classes.forEach(c => {
+      if (c.startsWith("theme-")) {
+        document.body.classList.remove(c);
+      }
+    });
+
+    const activeTheme = profile?.favorite_color || "sage";
+    document.body.classList.add(`theme-${activeTheme}`);
+  }, [profile]);
+
   const checkProfile = async (userId: string) => {
     if (!supabase) {
       setLoading(false);
