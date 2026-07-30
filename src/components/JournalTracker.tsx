@@ -627,7 +627,7 @@ export default function JournalTracker() {
                       {(!entry.user_id || (user && entry.user_id === user.id)) && (
                         <button
                           onClick={() => handleDeleteJournal(idx, entry.id)}
-                          className="p-1 rounded text-foreground/40 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+                          className="p-1 rounded text-foreground/40 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
