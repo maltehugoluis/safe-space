@@ -15,9 +15,10 @@ import ThoughtShredder from "@/components/ThoughtShredder";
 import GoodMomentsJar from "@/components/GoodMomentsJar";
 import SupporterNudge from "@/components/SupporterNudge";
 import SupporterLetters from "@/components/SupporterLetters";
+import SharedThoughts from "@/components/SharedThoughts";
 import { supabase } from "@/lib/supabase";
 
-type Tab = "ruhe" | "safespace" | "journal" | "hilfe" | "settings" | "nudge" | "briefe";
+type Tab = "ruhe" | "safespace" | "journal" | "hilfe" | "settings" | "nudge" | "briefe" | "shared";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("ruhe");
@@ -152,6 +153,10 @@ export default function Home() {
               <SupporterLetters linkedEmail={linkedEmail} />
             )}
 
+            {activeTab === "shared" && appMode === "supporter" && (
+              <SharedThoughts linkedEmail={linkedEmail} />
+            )}
+
             {activeTab === "settings" && (
               <div className="flex flex-col gap-8">
                 <Settings />
@@ -219,30 +224,32 @@ export default function Home() {
           </>
         ) : (
           <>
-            {/* Supporter Nudge */}
             <button
               onClick={() => setActiveTab("nudge")}
-              className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
-                activeTab === "nudge"
-                  ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
-                  : "text-foreground/50 hover:text-foreground/80"
+              className={`flex flex-col items-center gap-1 p-2 transition-colors ${
+                activeTab === "nudge" ? "text-sage-600 dark:text-sage-400" : "text-foreground/40 hover:text-foreground/80"
               }`}
             >
-              <Heart className="w-5 h-5" />
-              <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Nudge</span>
+              <Heart className={`w-6 h-6 ${activeTab === "nudge" ? "fill-current" : ""}`} />
+              <span className="text-[10px] font-bold">Nudge</span>
             </button>
-
-            {/* Supporter Letters */}
             <button
               onClick={() => setActiveTab("briefe")}
-              className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
-                activeTab === "briefe"
-                  ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
-                  : "text-foreground/50 hover:text-foreground/80"
+              className={`flex flex-col items-center gap-1 p-2 transition-colors ${
+                activeTab === "briefe" ? "text-sage-600 dark:text-sage-400" : "text-foreground/40 hover:text-foreground/80"
               }`}
             >
-              <Sparkles className="w-5 h-5" />
-              <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Briefe</span>
+              <BookOpen className={`w-6 h-6 ${activeTab === "briefe" ? "fill-current" : ""}`} />
+              <span className="text-[10px] font-bold">Briefe</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("shared")}
+              className={`flex flex-col items-center gap-1 p-2 transition-colors ${
+                activeTab === "shared" ? "text-sage-600 dark:text-sage-400" : "text-foreground/40 hover:text-foreground/80"
+              }`}
+            >
+              <Wind className="w-6 h-6" />
+              <span className="text-[10px] font-bold">Gedanken</span>
             </button>
           </>
         )}
