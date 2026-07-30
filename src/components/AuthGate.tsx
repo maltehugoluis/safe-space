@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Loader, ArrowRight, ArrowLeft, Check, Lock, ShieldAlert, Sparkles } from "lucide-react";
+import { Heart, Loader, ArrowRight, ArrowLeft, Check, Lock, ShieldAlert, Sparkles, LogOut } from "lucide-react";
 
 type Profile = {
   id: string;
@@ -99,6 +99,15 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     const activeTheme = profile?.favorite_color || "sage";
     document.body.classList.add(`theme-${activeTheme}`);
   }, [profile]);
+
+  const handleSignOut = async () => {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
+    setNeedsOnboarding(false);
+    setOnboardingStep(1);
+  };
 
   const checkProfile = async (userId: string) => {
     if (!supabase) {
@@ -572,7 +581,13 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
                   <ArrowLeft className="w-4 h-4" /> Zurück
                 </button>
               ) : (
-                <div />
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="flex items-center gap-1.5 text-xs font-semibold hover:underline text-foreground/50 hover:text-foreground cursor-pointer transition-colors"
+                >
+                  <LogOut className="w-3.5 h-3.5" /> Zurück zum Login
+                </button>
               )}
 
               {onboardingStep < 3 ? (
