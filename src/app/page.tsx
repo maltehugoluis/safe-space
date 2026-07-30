@@ -16,6 +16,9 @@ import GoodMomentsJar from "@/components/GoodMomentsJar";
 import SupporterNudge from "@/components/SupporterNudge";
 import SupporterLetters from "@/components/SupporterLetters";
 import SharedThoughts from "@/components/SharedThoughts";
+import SoundscapeGenerator from "@/components/SoundscapeGenerator";
+import ProgressiveRelaxation from "@/components/ProgressiveRelaxation";
+import SomaticShake from "@/components/SomaticShake";
 import { supabase } from "@/lib/supabase";
 
 type Tab = "ruhe" | "safespace" | "journal" | "hilfe" | "settings" | "nudge" | "briefe" | "shared";
@@ -106,8 +109,17 @@ export default function Home() {
                   <BreathingHelper />
                 </div>
 
+                {/* Soundscapes & Ambient Audio */}
+                <SoundscapeGenerator />
+
                 {/* Grounding Section */}
                 <GroundingGuide />
+
+                {/* Progressive Muscle Relaxation */}
+                <ProgressiveRelaxation />
+
+                {/* Somatic Stress Shake */}
+                <SomaticShake />
 
                 {/* Thought Shredder */}
                 <ThoughtShredder />
