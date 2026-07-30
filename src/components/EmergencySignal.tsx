@@ -98,56 +98,30 @@ export default function EmergencySignal() {
     }
 
     try {
-      if (signalType === "ntfy") {
-        // Trigger ntfy.sh push notification (100% Free)
-        const topic = ntfyTopic.trim();
-        const res = await fetch(`https://ntfy.sh/${topic}`, {
-          method: "POST",
-          body: "Ich brauche dich gerade. Bitte melde dich bei mir oder komm vorbei. Ich finde keine Worte.",
-          headers: {
-            "Title": "Safe Space Signal ❤️",
-            "Priority": "5", // Max priority (vibrates & makes loud sound on phone)
-            "Tags": "heart,rotating_light",
-          },
-        });
+      // Call our internal backend API to bypass CORS preflight issues
+      const res = await fetch("/api/send-signal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: signalType,
+          topic: ntfyTopic,
+          url: webhookUrl,
+        }),
+      });
 
-        if (!res.ok) throw new Error("ntfy response not ok");
-
-        setStatus("success");
-        setSuccessMessage("Dein ntfy-Signal wurde erfolgreich gesendet.");
-      } else {
-        // Trigger Discord/Telegram webhook
-        const url = webhookUrl.trim();
-        let bodyData = {};
-        
-        if (url.includes("discord.com/api/webhooks")) {
-          bodyData = {
-            content: "❤️ **Signal aus deinem Safe Space:**\nIch brauche dich gerade. Bitte melde dich bei mir oder komm zu mir. Ich finde gerade keine Worte.",
-          };
-        } else if (url.includes("api.telegram.org")) {
-          bodyData = {
-            text: "❤️ Signal aus deinem Safe Space: Ich brauche dich gerade. Bitte melde dich bei mir.",
-          };
-        } else {
-          bodyData = {
-            event: "safe_space_signal",
-            message: "Ich brauche dich gerade. Bitte melde dich bei mir.",
-            timestamp: new Date().toISOString(),
-          };
-        }
-
-        await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bodyData),
-          mode: "no-cors",
-        });
-
-        setStatus("success");
-        setSuccessMessage("Dein Webhook-Signal wurde lautlos gesendet.");
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Signal transmission failed");
       }
+
+      setStatus("success");
+      setSuccessMessage(
+        signalType === "ntfy"
+          ? "Dein ntfy-Signal wurde erfolgreich gesendet."
+          : "Dein Webhook-Signal wurde erfolgreich gesendet."
+      );
 
       setTimeout(() => {
         setStatus("idle");
