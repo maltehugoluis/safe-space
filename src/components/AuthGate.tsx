@@ -44,6 +44,8 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   const [country, setCountry] = useState("DE");
   const [favoriteColor, setFavoriteColor] = useState("sage");
   const [onboardingLoading, setOnboardingLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [tempProfile, setTempProfile] = useState<Profile | null>(null);
 
   // Auth Listener
   useEffect(() => {
@@ -172,8 +174,8 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       ];
       await supabase.from("achievements").upsert(defaultAchs);
 
-      setProfile(newProfile);
-      setNeedsOnboarding(false);
+      setTempProfile(newProfile);
+      setShowSuccess(true);
     } catch (err: any) {
       alert("Fehler beim Speichern des Profils: " + err.message);
     } finally {
@@ -210,6 +212,77 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
           <p className="text-[10px] text-foreground/50 leading-relaxed">
             Füge diese beiden Variablen in den <b>Environment Variables</b> deines Vercel-Projekts hinzu, starte ein neues Deployment und lade die Seite neu.
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Success Screen after Onboarding Completion
+  if (showSuccess && tempProfile) {
+    return (
+      <div className="min-h-screen bg-[#faf9f6] text-[#222c26] dark:bg-[#111513] dark:text-[#eae6df] flex items-center justify-center p-4">
+        {/* Soft Ambient Glows */}
+        <div className="ambient-glow bg-[#cfe0d3] dark:bg-[#1c2721] top-[-100px] left-[-100px]" aria-hidden="true" />
+        <div className="ambient-glow bg-[#e7e5d3] dark:bg-[#28332c] bottom-[-150px] right-[-100px]" aria-hidden="true" />
+
+        <div className="w-full max-w-sm bg-card border border-border rounded-[32px] p-8 shadow-xl flex flex-col gap-6 text-center relative z-10">
+          <div className="w-16 h-16 bg-sage-100 dark:bg-sage-950/40 text-sage-600 dark:text-sage-400 rounded-full flex items-center justify-center mx-auto mb-2">
+            <Check className="w-8 h-8 stroke-[3]" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold tracking-tight font-serif text-sage-700 dark:text-sage-300 font-bold">Alles eingerichtet!</h1>
+            <p className="text-xs text-foreground/60 leading-relaxed max-w-xs mx-auto">
+              Konto und Profil wurden erfolgreich erstellt und sicher verschlüsselt gespeichert.
+            </p>
+          </div>
+
+          <div className="w-full text-left p-4 rounded-2xl border border-border bg-background/55 text-xs leading-relaxed text-foreground/75 space-y-2">
+            <div className="flex justify-between border-b border-border/50 pb-1.5">
+              <span className="font-semibold text-foreground/50">Dein Name:</span>
+              <span className="font-bold">{tempProfile.user_name}</span>
+            </div>
+            <div className="flex justify-between border-b border-border/50 pb-1.5">
+              <span className="font-semibold text-foreground/50">Lieblingsmensch:</span>
+              <span className="font-bold">{tempProfile.partner_name}</span>
+            </div>
+            <div className="flex justify-between border-b border-border/50 pb-1.5">
+              <span className="font-semibold text-foreground/50">Nummer:</span>
+              <span className="font-bold font-mono">{tempProfile.partner_phone}</span>
+            </div>
+            <div className="flex justify-between border-b border-border/50 pb-1.5">
+              <span className="font-semibold text-foreground/50">Land:</span>
+              <span className="font-bold">{tempProfile.country === "DE" ? "Deutschland" : tempProfile.country === "AT" ? "Österreich" : "Schweiz"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold text-foreground/50">Lieblingsfarbe:</span>
+              <span className="font-bold flex items-center gap-1.5">
+                <div className={`w-3.5 h-3.5 rounded-full border border-black/10 ${
+                  tempProfile.favorite_color === "sage" ? "bg-[#62916e]" :
+                  tempProfile.favorite_color === "lavender" ? "bg-[#856ea8]" :
+                  tempProfile.favorite_color === "rose" ? "bg-[#b5717f]" :
+                  tempProfile.favorite_color === "peach" ? "bg-[#c08a65]" : "bg-[#5c86b5]"
+                }`} />
+                {
+                  tempProfile.favorite_color === "sage" ? "Salbeigrün" :
+                  tempProfile.favorite_color === "lavender" ? "Lavendel" :
+                  tempProfile.favorite_color === "rose" ? "Altrosa" :
+                  tempProfile.favorite_color === "peach" ? "Pfirsich" : "Ozeanblau"
+                }
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setProfile(tempProfile);
+              setNeedsOnboarding(false);
+              setShowSuccess(false);
+            }}
+            className="w-full py-3.5 rounded-full bg-sage-600 hover:bg-sage-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+          >
+            Safe Space betreten
+          </button>
         </div>
       </div>
     );
