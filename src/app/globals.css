@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Calming Sage Green Palette */
+  --color-sage-50: #f4f7f5;
+  --color-sage-100: #e6ede8;
+  --color-sage-200: #cfe0d3;
+  --color-sage-300: #aacab2;
+  --color-sage-400: #81ad8c;
+  --color-sage-500: #62916e;
+  --color-sage-600: #4c7456;
+  --color-sage-700: #3f5d47;
+  --color-sage-800: #354c3b;
+  --color-sage-900: #2d3f32;
+  --color-sage-950: #17221b;
+
+  /* Calming Cream & Sand Beige Palette */
+  --color-beige-50: #fafaf7;
+  --color-beige-100: #f4f3eb;
+  --color-beige-200: #e7e5d3;
+  --color-beige-300: #d6d2b5;
+  --color-beige-400: #bfb791;
+  --color-beige-500: #a99e71;
+  --color-beige-600: #908456;
+  --color-beige-700: #746944;
+  --color-beige-800: #5f5539;
+  --color-beige-900: #4f4631;
+  --color-beige-950: #2d2719;
+
+  /* Custom Soft Slates for Comfort */
+  --color-slate-920: #131715;
+  --color-slate-950: #0a0d0c;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --background: #faf9f6; /* Warm alabaster beige */
+  --foreground: #222c26; /* Soft forest charcoal */
+  --card: #f3f0e8; /* Soft clay tint card */
+  --card-foreground: #222c26;
+  --border: #e6e3da;
+  --ring: #62916e;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #111513; /* Soft dark forest-slate */
+    --foreground: #eae6df; /* Warm cream white */
+    --card: #19201c; /* Soft charcoal-sage card */
+    --card-foreground: #eae6df;
+    --border: #28332c;
+    --ring: #81ad8c;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Custom calming scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ring);
+}
+
+/* Calming ambient background glow */
+.ambient-glow {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 9999px;
+  filter: blur(120px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ambient-glow {
+    opacity: 0.08;
+  }
 }
