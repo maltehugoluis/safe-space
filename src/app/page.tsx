@@ -16,7 +16,6 @@ import GoodMomentsJar from "@/components/GoodMomentsJar";
 import SupporterNudge from "@/components/SupporterNudge";
 import SupporterLetters from "@/components/SupporterLetters";
 import SharedThoughts from "@/components/SharedThoughts";
-import SoundscapeGenerator from "@/components/SoundscapeGenerator";
 import ProgressiveRelaxation from "@/components/ProgressiveRelaxation";
 import SomaticShake from "@/components/SomaticShake";
 import { supabase } from "@/lib/supabase";
@@ -108,9 +107,6 @@ export default function Home() {
                   </h2>
                   <BreathingHelper />
                 </div>
-
-                {/* Soundscapes & Ambient Audio */}
-                <SoundscapeGenerator />
 
                 {/* Grounding Section */}
                 <GroundingGuide />
