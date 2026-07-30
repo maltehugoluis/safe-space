@@ -138,7 +138,10 @@ export default function BreathingHelper() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.15 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-[-3rem] bg-sage-400 dark:bg-sage-300 rounded-full filter blur-3xl opacity-40 scale-110"
+              className="absolute inset-[-100%] pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, var(--color-sage-400) 0%, transparent 60%)"
+              }}
             />
           )}
         </AnimatePresence>
