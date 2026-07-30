@@ -2,30 +2,39 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Settings, Check, AlertCircle, Loader } from "lucide-react";
+import { Heart, Settings, Check, AlertCircle, Loader, Bell, Link2 } from "lucide-react";
+
+type SignalType = "ntfy" | "webhook";
 
 export default function EmergencySignal() {
   const [isHolding, setIsHolding] = useState(false);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [signalType, setSignalType] = useState<SignalType>("ntfy");
+  const [ntfyTopic, setNtfyTopic] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
   const [showSettings, setShowSettings] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load webhook URL from localStorage on mount
+  // Load configuration from localStorage on mount
   useEffect(() => {
+    const savedType = localStorage.getItem("safespace_signal_type") as SignalType;
+    const savedTopic = localStorage.getItem("safespace_ntfy_topic");
     const savedUrl = localStorage.getItem("safespace_webhook_url");
-    if (savedUrl) {
-      setWebhookUrl(savedUrl);
-    }
+
+    if (savedType) setSignalType(savedType);
+    if (savedTopic) setNtfyTopic(savedTopic);
+    if (savedUrl) setWebhookUrl(savedUrl);
   }, []);
 
-  // Save webhook URL to localStorage
+  // Save configuration to localStorage
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem("safespace_webhook_url", webhookUrl);
+    localStorage.setItem("safespace_signal_type", signalType);
+    localStorage.setItem("safespace_ntfy_topic", ntfyTopic.trim());
+    localStorage.setItem("safespace_webhook_url", webhookUrl.trim());
     setShowSettings(false);
   };
 
@@ -71,11 +80,15 @@ export default function EmergencySignal() {
     setIsHolding(false);
     setStatus("sending");
 
-    if (!webhookUrl) {
-      // Simulate success if no webhook URL is configured (Demo Mode)
+    // Demo Mode check
+    const isNtfyConfigured = signalType === "ntfy" && ntfyTopic.trim().length > 0;
+    const isWebhookConfigured = signalType === "webhook" && webhookUrl.trim().length > 0;
+
+    if (!isNtfyConfigured && !isWebhookConfigured) {
+      // Simulate success if not configured (Demo Mode)
       setTimeout(() => {
         setStatus("success");
-        setSuccessMessage("Signal gesendet (Demo-Modus, richte ein Webhook in den Einstellungen ein!)");
+        setSuccessMessage("Signal ausgelöst (Demo-Modus, richte die Verbindung in den Einstellungen ein!)");
         setTimeout(() => {
           setStatus("idle");
           setProgress(0);
@@ -85,45 +98,63 @@ export default function EmergencySignal() {
     }
 
     try {
-      let bodyData = {};
-      
-      // Determine if Telegram or Discord based on URL
-      if (webhookUrl.includes("discord.com/api/webhooks")) {
-        bodyData = {
-          content: "❤️ **Signal aus deinem Safe Space:**\nIch brauche dich gerade. Bitte melde dich bei mir oder komm zu mir. Ich finde gerade keine Worte.",
-        };
-      } else if (webhookUrl.includes("api.telegram.org")) {
-        // Standard telegram bot payload template
-        bodyData = {
-          text: "❤️ Signal aus deinem Safe Space: Ich brauche dich gerade. Bitte melde dich bei mir.",
-        };
+      if (signalType === "ntfy") {
+        // Trigger ntfy.sh push notification (100% Free)
+        const topic = ntfyTopic.trim();
+        const res = await fetch(`https://ntfy.sh/${topic}`, {
+          method: "POST",
+          body: "Ich brauche dich gerade. Bitte melde dich bei mir oder komm vorbei. Ich finde keine Worte.",
+          headers: {
+            "Title": "Safe Space Signal ❤️",
+            "Priority": "5", // Max priority (vibrates & makes loud sound on phone)
+            "Tags": "heart,rotating_light",
+          },
+        });
+
+        if (!res.ok) throw new Error("ntfy response not ok");
+
+        setStatus("success");
+        setSuccessMessage("Dein ntfy-Signal wurde erfolgreich gesendet.");
       } else {
-        // Generic webhook fallback
-        bodyData = {
-          event: "safe_space_signal",
-          message: "Ich brauche dich gerade. Bitte melde dich bei mir.",
-          timestamp: new Date().toISOString(),
-        };
+        // Trigger Discord/Telegram webhook
+        const url = webhookUrl.trim();
+        let bodyData = {};
+        
+        if (url.includes("discord.com/api/webhooks")) {
+          bodyData = {
+            content: "❤️ **Signal aus deinem Safe Space:**\nIch brauche dich gerade. Bitte melde dich bei mir oder komm zu mir. Ich finde gerade keine Worte.",
+          };
+        } else if (url.includes("api.telegram.org")) {
+          bodyData = {
+            text: "❤️ Signal aus deinem Safe Space: Ich brauche dich gerade. Bitte melde dich bei mir.",
+          };
+        } else {
+          bodyData = {
+            event: "safe_space_signal",
+            message: "Ich brauche dich gerade. Bitte melde dich bei mir.",
+            timestamp: new Date().toISOString(),
+          };
+        }
+
+        await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bodyData),
+          mode: "no-cors",
+        });
+
+        setStatus("success");
+        setSuccessMessage("Dein Webhook-Signal wurde lautlos gesendet.");
       }
 
-      const res = await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyData),
-        mode: "no-cors", // Useful to prevent CORS errors on external webhooks
-      });
-
-      setStatus("success");
-      setSuccessMessage("Dein Signal wurde lautlos gesendet.");
-      
       setTimeout(() => {
         setStatus("idle");
         setProgress(0);
       }, 5000);
     } catch (err) {
-      console.error("Webhook error:", err);
+      console.error("Signal fetch error:", err);
       setStatus("error");
       setTimeout(() => {
         setStatus("idle");
@@ -150,8 +181,8 @@ export default function EmergencySignal() {
       <div className="w-full flex justify-end mb-4">
         <button
           onClick={() => setShowSettings(!showSettings)}
-          className="p-2 rounded-full border border-border bg-background text-foreground/75 hover:bg-sage-50 dark:hover:bg-sage-950 transition-all"
-          title="Webhook einrichten"
+          className="p-2 rounded-full border border-border bg-background text-foreground/75 hover:bg-sage-50 dark:hover:bg-sage-950 transition-all cursor-pointer"
+          title="Verbindung einrichten"
         >
           <Settings className="w-4 h-4" />
         </button>
@@ -248,6 +279,11 @@ export default function EmergencySignal() {
               {status === "idle" && (
                 <p className="text-xs text-foreground/60 leading-relaxed">
                   Halte das Herz gedrückt, um eine stille Benachrichtigung an deine Vertrauensperson zu senden.
+                  {signalType === "ntfy" && ntfyTopic.trim() && (
+                    <span className="block text-[10px] text-sage-600 dark:text-sage-400 font-semibold mt-1">
+                      Aktiviert über ntfy: "{ntfyTopic}"
+                    </span>
+                  )}
                 </p>
               )}
               {status === "success" && (
@@ -272,33 +308,98 @@ export default function EmergencySignal() {
             className="w-full flex flex-col gap-4 text-left"
           >
             <h3 className="text-sm font-semibold tracking-wide">Signal-Einstellungen</h3>
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="webhookUrl" className="text-xs font-medium text-foreground/60">
-                Telegram oder Discord Webhook URL
-              </label>
-              <input
-                id="webhookUrl"
-                type="url"
-                value={webhookUrl}
-                onChange={(e) => setWebhookUrl(e.target.value)}
-                placeholder="https://discord.com/api/webhooks/..."
-                className="w-full text-xs p-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:border-sage-500 focus:ring-1 focus:ring-sage-500"
-              />
+
+            {/* Selector Tab for Connection Type */}
+            <div className="flex bg-background border border-border p-1 rounded-xl gap-1">
+              <button
+                type="button"
+                onClick={() => setSignalType("ntfy")}
+                className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                  signalType === "ntfy"
+                    ? "bg-sage-600 text-white shadow-sm"
+                    : "text-foreground/60 hover:bg-sage-50 dark:hover:bg-sage-950/30"
+                }`}
+              >
+                <Bell className="w-3.5 h-3.5" />
+                ntfy.sh (Empfohlen)
+              </button>
+              <button
+                type="button"
+                onClick={() => setSignalType("webhook")}
+                className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all ${
+                  signalType === "webhook"
+                    ? "bg-sage-600 text-white shadow-sm"
+                    : "text-foreground/60 hover:bg-sage-50 dark:hover:bg-sage-950/30"
+                }`}
+              >
+                <Link2 className="w-3.5 h-3.5" />
+                Webhook URL
+              </button>
             </div>
-            <p className="text-[10px] text-foreground/50 leading-relaxed">
-              Trage hier einen Discord Webhook oder Telegram Bot-Link ein. Wenn das Feld leer ist, läuft das Signal im sicheren Demo-Modus.
-            </p>
+
+            {/* ntfy Form */}
+            {signalType === "ntfy" && (
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="ntfyTopic" className="text-xs font-semibold text-foreground/60">
+                    ntfy-Thema (Topic Name)
+                  </label>
+                  <input
+                    id="ntfyTopic"
+                    type="text"
+                    value={ntfyTopic}
+                    onChange={(e) => setNtfyTopic(e.target.value)}
+                    placeholder="z.B. safe-space-alarm-123xyz"
+                    className="w-full text-xs p-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:border-sage-500 focus:ring-1 focus:ring-sage-500"
+                  />
+                </div>
+                
+                {/* Visual Step-by-Step Instructions */}
+                <div className="p-3 bg-sage-50/50 dark:bg-sage-950/20 border border-sage-100 dark:border-sage-900 rounded-2xl flex flex-col gap-2">
+                  <span className="text-[10px] font-bold text-sage-800 dark:text-sage-300">Anleitung für dein Handy:</span>
+                  <ol className="text-[9px] text-foreground/60 list-decimal pl-4 space-y-1.5 leading-relaxed">
+                    <li>Lade die kostenlose <b>ntfy</b> App (iOS / Android) herunter.</li>
+                    <li>Klicke auf das <b>+</b> und abonniere dein oben ausgedachtes Thema.</li>
+                    <li>Trage genau denselben Namen hier oben ein und klicke auf Speichern.</li>
+                  </ol>
+                </div>
+              </div>
+            )}
+
+            {/* Webhook Form */}
+            {signalType === "webhook" && (
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="webhookUrl" className="text-xs font-semibold text-foreground/60">
+                    Discord oder Telegram Webhook URL
+                  </label>
+                  <input
+                    id="webhookUrl"
+                    type="url"
+                    value={webhookUrl}
+                    onChange={(e) => setWebhookUrl(e.target.value)}
+                    placeholder="https://discord.com/api/webhooks/..."
+                    className="w-full text-xs p-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:border-sage-500 focus:ring-1 focus:ring-sage-500"
+                  />
+                </div>
+                <p className="text-[9px] text-foreground/50 leading-relaxed">
+                  Trage hier einen Discord Webhook oder Telegram Bot-Link ein. Wenn das Feld leer ist, läuft das Signal im sicheren Demo-Modus.
+                </p>
+              </div>
+            )}
+
+            {/* Action buttons */}
             <div className="flex gap-2 mt-2">
               <button
                 type="button"
                 onClick={() => setShowSettings(false)}
-                className="flex-1 py-2.5 rounded-xl border border-border bg-background text-xs font-medium hover:bg-sage-50 dark:hover:bg-sage-950 transition-all"
+                className="flex-1 py-2.5 rounded-xl border border-border bg-background text-xs font-medium hover:bg-sage-50 dark:hover:bg-sage-950 transition-all cursor-pointer"
               >
                 Abbrechen
               </button>
               <button
                 type="submit"
-                className="flex-1 py-2.5 rounded-xl bg-sage-600 text-white text-xs font-medium hover:bg-sage-700 transition-all shadow-sm"
+                className="flex-1 py-2.5 rounded-xl bg-sage-600 text-white text-xs font-bold hover:bg-sage-700 transition-all shadow-sm cursor-pointer"
               >
                 Speichern
               </button>
