@@ -361,23 +361,27 @@ export default function Settings() {
 
               <div className="flex flex-col gap-4">
                 {pendingSupporters.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <p className="text-xs font-bold text-rose-500">Neue Anfragen:</p>
+                  <div className="flex flex-col gap-2.5">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 px-2.5 py-1 rounded-full w-fit border border-amber-200 dark:border-amber-900">
+                      Neue Anfrage erhalten
+                    </span>
                     {pendingSupporters.map(email => (
-                      <div key={email} className="flex flex-col md:flex-row md:items-center justify-between gap-2 p-3 rounded-xl bg-background border border-border">
-                        <span className="text-sm font-medium">{email}</span>
-                        <div className="flex gap-2">
+                      <div key={email} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-background border border-border/80 shadow-xs">
+                        <span className="text-sm font-medium text-foreground/90 truncate max-w-full font-mono text-xs sm:text-sm" title={email}>
+                          {email}
+                        </span>
+                        <div className="flex items-center gap-2 shrink-0">
                           <button
                             type="button"
                             onClick={() => handleAcceptConnection(email)}
-                            className="bg-sage-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:bg-sage-700 shadow-sm"
+                            className="flex-1 sm:flex-initial bg-sage-600 hover:bg-sage-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95"
                           >
                             Zulassen
                           </button>
                           <button
                             type="button"
                             onClick={() => handleRejectConnection(email)}
-                            className="bg-background text-foreground/60 border border-border px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:bg-red-50 hover:text-red-500 hover:border-red-200"
+                            className="flex-1 sm:flex-initial bg-muted/60 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 border border-border text-foreground/70 px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95"
                           >
                             Ablehnen
                           </button>
@@ -388,15 +392,19 @@ export default function Settings() {
                 )}
 
                 {approvedSupporters.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <p className="text-xs font-bold text-foreground/60">Aktive Supporter:</p>
+                  <div className="flex flex-col gap-2.5 mt-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-sage-600 dark:text-sage-400">
+                      Aktive Supporter
+                    </span>
                     {approvedSupporters.map(email => (
-                      <div key={email} className="flex items-center justify-between gap-2 p-3 rounded-xl bg-background border border-border">
-                        <span className="text-sm font-medium">{email}</span>
+                      <div key={email} className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-background border border-border/80 shadow-xs">
+                        <span className="text-xs sm:text-sm font-medium text-foreground/80 truncate font-mono" title={email}>
+                          {email}
+                        </span>
                         <button
                           type="button"
                           onClick={() => handleRemoveConnection(email)}
-                          className="text-foreground/40 hover:text-red-500 transition-colors p-1"
+                          className="text-foreground/40 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 p-2 rounded-xl transition-all shrink-0"
                           title="Supporter entfernen"
                         >
                           <Trash2 className="w-4 h-4" />
