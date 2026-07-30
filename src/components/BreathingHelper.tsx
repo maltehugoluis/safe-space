@@ -138,7 +138,7 @@ export default function BreathingHelper() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.15 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-sage-400 dark:bg-sage-300 rounded-full filter blur-xl"
+              className="absolute inset-[-3rem] bg-sage-400 dark:bg-sage-300 rounded-full filter blur-3xl opacity-40 scale-110"
             />
           )}
         </AnimatePresence>
