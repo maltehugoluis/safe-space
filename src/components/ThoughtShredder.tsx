@@ -38,13 +38,17 @@ export default function ThoughtShredder() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ 
-                opacity: [1, 1, 0], 
-                y: [0, -10, -30], 
-                scale: [1, 0.95, 0.8], 
-                filter: ["blur(0px) brightness(1)", "blur(2px) brightness(1.5)", "blur(8px) brightness(0.5) grayscale(100%)"],
-                transition: { duration: 1.8, ease: "easeIn" }
+                opacity: [1, 1, 0],
+                scale: [1, 0.98, 0.9],
+                filter: [
+                  "brightness(1) blur(0px) sepia(0)", 
+                  "brightness(1.5) blur(2px) sepia(0.8) hue-rotate(-20deg) saturate(4)", 
+                  "brightness(0) blur(6px) grayscale(1)"
+                ],
+                y: [0, 2, -2, 2, -2, -15],
+                transition: { duration: 2, ease: "easeInOut" }
               }}
-              className="absolute inset-0 w-full h-full"
+              className="absolute inset-0 w-full h-full origin-bottom"
             >
               <textarea
                 value={text}
@@ -69,41 +73,78 @@ export default function ThoughtShredder() {
               className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
             >
               <div className="relative w-full h-full">
-                {/* Fire / Ash particles animation */}
-                {[...Array(40)].map((_, i) => {
-                  const size = Math.random() * 8 + 4;
-                  const isAsh = Math.random() > 0.5;
-                  const colors = isAsh 
-                    ? ["#555555", "#333333", "#111111"] 
-                    : ["#ffb347", "#ff5500", "#ff0000"];
-                  
+                {/* Giant Flames (blurry blobs) */}
+                {[...Array(12)].map((_, i) => (
+                  <motion.div
+                    key={`flame-${i}`}
+                    initial={{ opacity: 0, y: 50, scale: 0.5 }}
+                    animate={{ 
+                      opacity: [0, 0.9, 0], 
+                      y: -80 - Math.random() * 80, 
+                      scale: [0.5, 2.5, 1],
+                      x: (Math.random() - 0.5) * 50
+                    }}
+                    transition={{ 
+                      duration: 1.2 + Math.random() * 0.8, 
+                      ease: "easeIn", 
+                      delay: Math.random() * 0.5 
+                    }}
+                    className="absolute bottom-0 rounded-full mix-blend-screen bg-gradient-to-t from-red-600 via-orange-500 to-yellow-300 blur-[14px]"
+                    style={{ 
+                      width: 50 + Math.random() * 40, 
+                      height: 60 + Math.random() * 50, 
+                      left: `${5 + (i / 12) * 90}%` 
+                    }}
+                  />
+                ))}
+
+                {/* Flying Embers (bright, fast dots) */}
+                {[...Array(25)].map((_, i) => (
+                  <motion.div
+                    key={`ember-${i}`}
+                    initial={{ opacity: 0, y: 40, x: `${Math.random() * 100}%` }}
+                    animate={{ 
+                      opacity: [0, 1, 0], 
+                      y: -100 - Math.random() * 150, 
+                      x: `${Math.random() * 100}%`
+                    }}
+                    transition={{ 
+                      duration: 0.8 + Math.random() * 1.5, 
+                      ease: "easeOut", 
+                      delay: Math.random() * 1 
+                    }}
+                    className="absolute bottom-0 w-1.5 h-1.5 rounded-full bg-yellow-200 shadow-[0_0_10px_3px_rgba(255,100,0,0.9)]"
+                  />
+                ))}
+
+                {/* Dark Smoke / Ash */}
+                {[...Array(15)].map((_, i) => {
+                  const size = Math.random() * 12 + 6;
                   return (
                     <motion.div
-                      key={i}
+                      key={`smoke-${i}`}
                       initial={{ 
                         opacity: 0, 
-                        y: 100 + Math.random() * 20, 
-                        x: `${5 + Math.random() * 90}%`,
+                        y: 80, 
+                        x: `${Math.random() * 100}%`,
                         scale: 0.5 
                       }}
                       animate={{ 
-                        opacity: [0, 1, 0], 
-                        y: -20 - Math.random() * 120, 
-                        x: `${5 + Math.random() * 90 + (Math.random() - 0.5) * 30}%`,
-                        scale: [0.5, 1.5, 0],
-                        backgroundColor: colors
+                        opacity: [0, 0.6, 0], 
+                        y: -150 - Math.random() * 100, 
+                        x: `${Math.random() * 100}%`,
+                        scale: [0.5, 3, 5],
+                        rotate: Math.random() * 360
                       }}
                       transition={{ 
-                        duration: 1.5 + Math.random() * 1, 
+                        duration: 2 + Math.random() * 1.5, 
                         ease: "easeOut",
-                        delay: Math.random() * 0.4
+                        delay: 0.5 + Math.random() * 0.8
                       }}
-                      className="absolute rounded-full mix-blend-screen dark:mix-blend-lighten"
+                      className="absolute bottom-0 rounded-full bg-[#111111] blur-[4px]"
                       style={{ 
                         width: size, 
                         height: size,
-                        boxShadow: isAsh ? "none" : "0 0 12px 3px rgba(255,85,0,0.6)",
-                        bottom: 0
                       }}
                     />
                   );
