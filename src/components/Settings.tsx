@@ -37,6 +37,7 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [savingMode, setSavingMode] = useState(false);
 
   // Form states
   const [userName, setUserName] = useState("");
@@ -143,6 +144,25 @@ export default function Settings() {
     }
   };
 
+  const handleSaveMode = async () => {
+    if (!supabase || !user) return;
+    setSavingMode(true);
+    try {
+      const updates = {
+        app_mode: appMode,
+        linked_user_email: linkedUserEmail.trim() || null,
+      };
+      const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
+      if (error) throw error;
+      
+      // Reload to instantly show the new tabs
+      window.location.reload();
+    } catch (err) {
+      console.error("Error saving mode:", err);
+      setSavingMode(false);
+    }
+  };
+
   const handleSignOut = async () => {
     if (!supabase) return;
     await supabase.auth.signOut();
@@ -234,17 +254,47 @@ export default function Settings() {
                 >
                   <div className="pt-4 mt-2 border-t border-border flex flex-col gap-1.5">
                     <label className="text-xs font-semibold text-foreground/60">E-Mail-Adresse der Person, die du unterstützt</label>
-                    <input
-                      type="email"
-                      required={appMode === "supporter"}
-                      value={linkedUserEmail}
-                      onChange={(e) => setLinkedUserEmail(e.target.value)}
-                      placeholder="partner@example.com"
-                      className="w-full text-sm p-3 rounded-xl border border-border bg-background focus:outline-none focus:border-sage-500 focus:ring-1 focus:ring-sage-500"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        required={appMode === "supporter"}
+                        value={linkedUserEmail}
+                        onChange={(e) => setLinkedUserEmail(e.target.value)}
+                        placeholder="partner@example.com"
+                        className="w-full flex-1 text-sm p-3 rounded-xl border border-border bg-background focus:outline-none focus:border-sage-500 focus:ring-1 focus:ring-sage-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSaveMode}
+                        disabled={savingMode || !linkedUserEmail.trim()}
+                        className="bg-sage-600 text-white px-4 rounded-xl text-xs font-bold transition-all hover:bg-sage-700 whitespace-nowrap shadow-sm disabled:opacity-50"
+                      >
+                        {savingMode ? "Lädt..." : "Aktivieren"}
+                      </button>
+                    </div>
                     <p className="text-[10px] text-foreground/50 mt-1">
                       Die Person muss mit dieser E-Mail in der App registriert sein. Du kannst dann Briefe und Nudges an sie senden.
                     </p>
+                  </div>
+                </motion.div>
+              )}
+              
+              {appMode === "receiver" && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="pt-4 mt-2 border-t border-border flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleSaveMode}
+                      disabled={savingMode}
+                      className="bg-sage-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all hover:bg-sage-700 shadow-sm disabled:opacity-50"
+                    >
+                      {savingMode ? "Lädt..." : "Safe Space aktivieren"}
+                    </button>
                   </div>
                 </motion.div>
               )}
