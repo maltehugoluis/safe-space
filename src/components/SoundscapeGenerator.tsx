@@ -16,10 +16,10 @@ interface SoundTrack {
 
 export default function SoundscapeGenerator() {
   const [tracks, setTracks] = useState<SoundTrack[]>([
-    { id: "rain", name: "Sanfter Regen", icon: <CloudRain className="w-5 h-5 text-blue-400" />, active: false, volume: 0.5 },
-    { id: "waves", name: "Meeresrauschen", icon: <Waves className="w-5 h-5 text-teal-400" />, active: false, volume: 0.5 },
-    { id: "fire", name: "Lagerfeuer", icon: <Flame className="w-5 h-5 text-amber-500" />, active: false, volume: 0.5 },
-    { id: "brown", name: "Tiefe Ruhe", icon: <Radio className="w-5 h-5 text-purple-400" />, active: false, volume: 0.5 },
+    { id: "rain", name: "Sanfter Regen", icon: <CloudRain className="w-5 h-5 text-sage-600 dark:text-sage-400" />, active: false, volume: 0.5 },
+    { id: "waves", name: "Meeresrauschen", icon: <Waves className="w-5 h-5 text-sage-600 dark:text-sage-400" />, active: false, volume: 0.5 },
+    { id: "fire", name: "Lagerfeuer", icon: <Flame className="w-5 h-5 text-sage-600 dark:text-sage-400" />, active: false, volume: 0.5 },
+    { id: "brown", name: "Tiefe Ruhe", icon: <Radio className="w-5 h-5 text-sage-600 dark:text-sage-400" />, active: false, volume: 0.5 },
   ]);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -271,7 +271,7 @@ export default function SoundscapeGenerator() {
           >
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div className="p-2.5 rounded-xl bg-card border border-border/50 shrink-0">
+                <div className="w-9 h-9 rounded-full bg-sage-100 dark:bg-sage-900/30 flex items-center justify-center shrink-0">
                   {track.icon}
                 </div>
                 <div className="flex flex-col min-w-0 flex-1">

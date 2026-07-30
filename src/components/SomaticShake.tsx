@@ -38,7 +38,7 @@ export default function SomaticShake() {
     <div className="bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col gap-5">
       <div className="flex items-center justify-between border-b border-border pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
+          <div className="w-9 h-9 rounded-full bg-sage-100 dark:bg-sage-900/30 flex items-center justify-center text-sage-600 dark:text-sage-400">
             <Zap className="w-5 h-5" />
           </div>
           <div>
@@ -61,11 +61,11 @@ export default function SomaticShake() {
       {!isActive && !isFinished ? (
         <div className="flex flex-col gap-4 items-center text-center py-4">
           <p className="text-xs text-foreground/70 leading-relaxed max-w-md">
-            In der Traumatherapie erwiesen: **Schütteln baut überschüssige Stress-Energie und Cortisol ab**. Schüttle deine Hände, Arme und Beine 30 Sek. kräftig aus!
+            In der Traumatherapie erwiesen: <span className="font-bold text-foreground">Schütteln baut überschüssige Stress-Energie und Cortisol ab</span>. Schüttle deine Hände, Arme und Beine 30 Sek. kräftig aus!
           </p>
           <button
             onClick={handleStart}
-            className="px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-md transition-all flex items-center gap-2 hover:scale-105 active:scale-95 cursor-pointer"
+            className="px-6 py-3.5 rounded-2xl bg-sage-600 hover:bg-sage-700 text-white font-bold text-sm shadow-md transition-all flex items-center gap-2 hover:scale-105 active:scale-95 cursor-pointer"
           >
             <Play className="w-4 h-4 fill-current" /> 30-Sek. Shake starten 🐥
           </button>
@@ -76,7 +76,7 @@ export default function SomaticShake() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center justify-center gap-3 text-center py-6"
         >
-          <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-600 dark:text-amber-400">
+          <div className="w-12 h-12 rounded-full bg-sage-100 dark:bg-sage-950/50 flex items-center justify-center text-sage-600 dark:text-sage-400">
             <Check className="w-6 h-6" />
           </div>
           <h4 className="font-bold text-base text-foreground">Körperliche Anspannung gelöst! 🍃</h4>
@@ -85,7 +85,7 @@ export default function SomaticShake() {
           </p>
           <button
             onClick={handleStart}
-            className="mt-2 text-xs font-bold text-amber-600 dark:text-amber-400 underline hover:opacity-80"
+            className="mt-2 text-xs font-bold text-sage-600 dark:text-sage-400 underline hover:opacity-80"
           >
             Noch einmal schütteln
           </button>
@@ -100,16 +100,16 @@ export default function SomaticShake() {
               y: [-3, 3, -2, 2, -4, 4, 0],
             }}
             transition={{ repeat: Infinity, duration: 0.3, ease: "linear" }}
-            className="w-24 h-24 rounded-full bg-amber-500/10 border-2 border-amber-500/50 flex items-center justify-center text-amber-500 shadow-lg"
+            className="w-24 h-24 rounded-full bg-sage-500/10 border-2 border-sage-500/50 flex items-center justify-center text-sage-600 dark:text-sage-400 shadow-lg"
           >
-            <Zap className="w-12 h-12 fill-amber-500/30" />
+            <Zap className="w-12 h-12 fill-sage-500/20" />
           </motion.div>
 
           <div className="flex flex-col items-center gap-1">
             <span className="text-3xl font-extrabold text-foreground font-mono">
               {timeLeft}s
             </span>
-            <p className="text-sm font-bold text-amber-600 dark:text-amber-400 animate-pulse mt-1">
+            <p className="text-sm font-bold text-sage-600 dark:text-sage-400 animate-pulse mt-1">
               SCHÜTTLE DEINE HÄNDE & ARME AUS! 👋
             </p>
           </div>
@@ -121,7 +121,7 @@ export default function SomaticShake() {
           {/* Progress bar */}
           <div className="w-full bg-border h-1.5 rounded-full overflow-hidden mt-2">
             <div
-              className="bg-amber-500 h-full transition-all duration-300"
+              className="bg-sage-600 h-full transition-all duration-300"
               style={{ width: `${((30 - timeLeft) / 30) * 100}%` }}
             />
           </div>

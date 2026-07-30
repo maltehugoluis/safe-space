@@ -96,7 +96,7 @@ export default function ProgressiveRelaxation() {
     <div className="bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col gap-5">
       <div className="flex items-center justify-between border-b border-border pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 dark:text-rose-400">
+          <div className="w-9 h-9 rounded-full bg-sage-100 dark:bg-sage-900/30 flex items-center justify-center text-sage-600 dark:text-sage-400">
             <Activity className="w-5 h-5" />
           </div>
           <div>
