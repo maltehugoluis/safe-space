@@ -12,10 +12,7 @@ export default function SupporterNudge({ linkedEmail }: { linkedEmail: string })
     if (!supabase || !linkedEmail) return;
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ has_unread_nudge: true })
-        .eq("email", linkedEmail);
+      const { error } = await supabase.rpc("send_nudge", { target_email: linkedEmail });
 
       if (error) throw error;
       
