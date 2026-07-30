@@ -341,11 +341,11 @@ export default function Settings() {
         </section>
 
         {/* Save Button fixed at bottom (or just end of form) */}
-        <div className="sticky bottom-20 pt-2 pb-6 z-20 bg-gradient-to-t from-background via-background to-transparent">
+        <div className="pt-2 pb-6">
           <button
             type="submit"
             disabled={saving}
-            className={`w-full py-3.5 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-md ${
+            className={`w-full py-3.5 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-sm ${
               success
                 ? "bg-sage-600 text-white"
                 : "bg-foreground text-background hover:scale-[1.02] active:scale-[0.98]"
