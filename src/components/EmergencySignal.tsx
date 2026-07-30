@@ -150,12 +150,16 @@ export default function EmergencySignal() {
   };
 
   return (
-    <div className="w-full bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col items-center">
+    <div className="w-full bg-card/60 backdrop-blur-xl border border-border/60 rounded-[2rem] p-8 shadow-sm flex flex-col items-center relative overflow-hidden">
+      {/* Decorative background glow for the whole card */}
+      <div className="absolute -top-24 -right-24 w-64 h-64 bg-sage-400/10 dark:bg-sage-500/10 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-sage-300/10 dark:bg-sage-400/10 rounded-full blur-[80px] pointer-events-none" />
+
       {/* Settings trigger */}
-      <div className="w-full flex justify-end mb-4">
+      <div className="w-full flex justify-end mb-2 relative z-10">
         <button
           onClick={() => setShowSettings(!showSettings)}
-          className="p-2 rounded-full border border-border bg-background text-foreground/75 hover:bg-sage-50 dark:hover:bg-sage-950 transition-all cursor-pointer"
+          className="p-2.5 rounded-full border border-border/80 bg-background/50 backdrop-blur-sm text-foreground/60 hover:text-foreground hover:bg-sage-50 dark:hover:bg-sage-950/50 hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm"
           title="Verbindung einrichten"
         >
           <Settings className="w-4 h-4" />
@@ -169,26 +173,44 @@ export default function EmergencySignal() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="flex flex-col items-center w-full"
+            className="flex flex-col items-center w-full relative z-10 mt-2"
           >
             {/* The main hold button */}
-            <div className="relative w-48 h-48 flex items-center justify-center mb-6">
-              {/* Outer ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-border" />
+            <div className="relative w-56 h-56 flex items-center justify-center mb-8">
+              
+              {/* Idle Pulsing Ripples */}
+              <AnimatePresence>
+                {status === "idle" && !isHolding && (
+                  <>
+                    <motion.div
+                      animate={{ scale: [1, 1.4, 1], opacity: [0, 0.4, 0] }}
+                      transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                      className="absolute inset-0 rounded-full bg-sage-400/20 dark:bg-sage-300/10 pointer-events-none"
+                    />
+                    <motion.div
+                      animate={{ scale: [1, 1.7, 1], opacity: [0, 0.2, 0] }}
+                      transition={{ duration: 3.5, delay: 0.8, repeat: Infinity, ease: "easeInOut" }}
+                      className="absolute inset-0 rounded-full bg-sage-400/10 dark:bg-sage-300/5 pointer-events-none"
+                    />
+                  </>
+                )}
+              </AnimatePresence>
 
-              {/* Progress visual filling ring */}
-              <svg className="absolute inset-0 w-full h-full -rotate-90">
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="92"
-                  className="stroke-sage-500 dark:stroke-sage-400 fill-none transition-all"
-                  strokeWidth="6"
-                  strokeDasharray="578"
-                  strokeDashoffset={578 - (578 * progress) / 100}
-                  strokeLinecap="round"
-                />
-              </svg>
+              {/* Progress visual filling ring wrapper */}
+              <div className="absolute inset-2">
+                <svg className="w-full h-full -rotate-90 drop-shadow-md">
+                  <circle
+                    cx="104"
+                    cy="104"
+                    r="100"
+                    className="stroke-sage-500/80 dark:stroke-sage-400/80 fill-none transition-all duration-75"
+                    strokeWidth="6"
+                    strokeDasharray="628"
+                    strokeDashoffset={628 - (628 * progress) / 100}
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
 
               {/* Central button body */}
               <button
@@ -197,29 +219,36 @@ export default function EmergencySignal() {
                 onMouseLeave={handlePressEnd}
                 onTouchStart={handlePressStart}
                 onTouchEnd={handlePressEnd}
-                className={`relative w-40 h-40 rounded-full flex flex-col items-center justify-center transition-all select-none shadow-md cursor-pointer ${
+                className={`relative w-44 h-44 rounded-full flex flex-col items-center justify-center transition-all duration-300 select-none cursor-pointer overflow-hidden ${
                   status === "sending"
-                    ? "bg-beige-100 border border-beige-300 dark:bg-beige-950/40 dark:border-beige-800"
+                    ? "bg-beige-100 border border-beige-300 dark:bg-beige-950/60 dark:border-beige-800 shadow-[0_0_40px_rgba(var(--color-beige-400),0.3)]"
                     : status === "success"
-                    ? "bg-sage-600 text-white"
+                    ? "bg-sage-600 text-white shadow-[0_0_50px_rgba(var(--color-sage-500),0.6)]"
                     : status === "error"
-                    ? "bg-red-50 dark:bg-red-950/40 border border-red-200 text-red-500"
+                    ? "bg-red-50 dark:bg-red-950/60 border border-red-200 text-red-500 shadow-[0_0_40px_rgba(239,68,68,0.3)]"
                     : isHolding
-                    ? "bg-sage-100 border border-sage-300 dark:bg-sage-900/60 dark:border-sage-800 scale-95"
-                    : "bg-background border border-border hover:border-sage-200"
+                    ? "bg-sage-50 border border-sage-300 dark:bg-sage-900/60 dark:border-sage-800 scale-95 shadow-[0_0_60px_rgba(var(--color-sage-400),0.4)]"
+                    : "bg-white/80 dark:bg-black/40 backdrop-blur-md border border-white/50 dark:border-white/10 hover:shadow-xl hover:border-sage-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
                 }`}
                 style={{ touchAction: "none" }}
               >
+                {/* Internal gradient glow when holding */}
+                {isHolding && status === "idle" && (
+                  <div className="absolute inset-0 bg-gradient-to-b from-sage-400/20 to-transparent opacity-50 animate-pulse pointer-events-none" />
+                )}
+
                 {status === "idle" && (
                   <>
                     <Heart
-                      className={`w-12 h-12 mb-1.5 transition-all ${
+                      className={`w-14 h-14 mb-2 transition-all duration-300 ${
                         isHolding 
-                          ? "text-sage-600 dark:text-sage-400 scale-110 fill-current animate-pulse" 
-                          : "text-sage-500 dark:text-sage-400"
+                          ? "text-sage-600 dark:text-sage-400 scale-[1.15] fill-sage-600 dark:fill-sage-400 drop-shadow-md" 
+                          : "text-sage-500 dark:text-sage-400 drop-shadow-sm"
                       }`}
                     />
-                    <span className="text-[10px] uppercase tracking-widest text-foreground/60 font-semibold text-center px-4 leading-tight">
+                    <span className={`text-[10px] uppercase tracking-[0.2em] font-bold text-center px-4 transition-colors ${
+                      isHolding ? "text-sage-700 dark:text-sage-300" : "text-foreground/50"
+                    }`}>
                       {isHolding ? "Gedrückt halten..." : "Halten für Signal"}
                     </span>
                   </>
@@ -227,49 +256,70 @@ export default function EmergencySignal() {
 
                 {status === "sending" && (
                   <>
-                    <Loader className="w-10 h-10 animate-spin text-sage-600 dark:text-sage-400 mb-1" />
-                    <span className="text-xs font-medium text-foreground/70">Wird gesendet...</span>
+                    <Loader className="w-12 h-12 animate-spin text-beige-600 dark:text-beige-400 mb-2 drop-shadow-sm" />
+                    <span className="text-[11px] font-bold tracking-widest uppercase text-foreground/60">Senden...</span>
                   </>
                 )}
 
                 {status === "success" && (
                   <>
-                    <Check className="w-12 h-12 stroke-[3] mb-1.5" />
-                    <span className="text-xs font-semibold">Gesendet</span>
+                    <Check className="w-14 h-14 stroke-[2.5] mb-2 drop-shadow-md" />
+                    <span className="text-[11px] font-bold tracking-widest uppercase">Gesendet</span>
                   </>
                 )}
 
                 {status === "error" && (
                   <>
-                    <AlertCircle className="w-12 h-12 mb-1.5" />
-                    <span className="text-xs font-semibold">Fehler</span>
+                    <AlertCircle className="w-14 h-14 mb-2 drop-shadow-md" />
+                    <span className="text-[11px] font-bold tracking-widest uppercase">Fehler</span>
                   </>
                 )}
               </button>
             </div>
 
             {/* Instruction description below */}
-            <div className="h-12 text-center max-w-xs px-2 flex flex-col justify-center">
-              {status === "idle" && (
-                <p className="text-xs text-foreground/60 leading-relaxed">
-                  Halte das Herz gedrückt, um eine stille Benachrichtigung an deine Vertrauensperson zu senden.
-                  {signalType === "ntfy" && ntfyTopic.trim() && (
-                    <span className="block text-[10px] text-sage-600 dark:text-sage-400 font-semibold mt-1">
-                      Aktiviert über ntfy: "{ntfyTopic}"
-                    </span>
-                  )}
-                </p>
-              )}
-              {status === "success" && (
-                <p className="text-xs text-sage-600 dark:text-sage-400 font-medium leading-relaxed">
-                  {successMessage}
-                </p>
-              )}
-              {status === "error" && (
-                <p className="text-xs text-red-500 font-medium leading-relaxed">
-                  Senden fehlgeschlagen. Prüfe deine Internetverbindung oder den Webhook.
-                </p>
-              )}
+            <div className="min-h-[4rem] text-center max-w-sm px-4 flex flex-col justify-center items-center">
+              <AnimatePresence mode="wait">
+                {status === "idle" && (
+                  <motion.p
+                    key="idle-text"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    className="text-[13px] text-foreground/60 leading-relaxed font-medium"
+                  >
+                    Halte das Herz gedrückt, um eine stille Benachrichtigung an deine Vertrauensperson zu senden.
+                    {signalType === "ntfy" && ntfyTopic.trim() && (
+                      <span className="block mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-sage-50 dark:bg-sage-950/50 rounded-full text-[10px] text-sage-600 dark:text-sage-400 font-bold tracking-wide">
+                        <Bell className="w-3 h-3" />
+                        ntfy: {ntfyTopic}
+                      </span>
+                    )}
+                  </motion.p>
+                )}
+                {status === "success" && (
+                  <motion.p
+                    key="success-text"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    className="text-[13px] text-sage-600 dark:text-sage-400 font-bold leading-relaxed"
+                  >
+                    {successMessage}
+                  </motion.p>
+                )}
+                {status === "error" && (
+                  <motion.p
+                    key="error-text"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    className="text-[13px] text-red-500 font-bold leading-relaxed"
+                  >
+                    Senden fehlgeschlagen. Prüfe deine Verbindung.
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         ) : (
