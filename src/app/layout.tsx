@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <body className="antialiased selection:bg-sage-200 selection:text-sage-900">
         <div className="flex flex-col min-h-screen w-full overflow-x-hidden relative">
