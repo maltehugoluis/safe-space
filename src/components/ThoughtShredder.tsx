@@ -102,11 +102,11 @@ export default function ThoughtShredder() {
                 {[...Array(25)].map((_, i) => (
                   <motion.div
                     key={`ember-${i}`}
-                    initial={{ opacity: 0, y: 40, x: `${Math.random() * 100}%` }}
+                    initial={{ opacity: 0, y: 40, x: 0 }}
                     animate={{ 
                       opacity: [0, 1, 0], 
                       y: -100 - Math.random() * 150, 
-                      x: `${Math.random() * 100}%`
+                      x: (Math.random() - 0.5) * 40
                     }}
                     transition={{ 
                       duration: 0.8 + Math.random() * 1.5, 
@@ -114,6 +114,7 @@ export default function ThoughtShredder() {
                       delay: Math.random() * 1 
                     }}
                     className="absolute bottom-0 w-1.5 h-1.5 rounded-full bg-yellow-200 shadow-[0_0_10px_3px_rgba(255,100,0,0.9)]"
+                    style={{ left: `${Math.random() * 100}%` }}
                   />
                 ))}
 
@@ -126,13 +127,13 @@ export default function ThoughtShredder() {
                       initial={{ 
                         opacity: 0, 
                         y: 80, 
-                        x: `${Math.random() * 100}%`,
+                        x: 0,
                         scale: 0.5 
                       }}
                       animate={{ 
-                        opacity: [0, 0.6, 0], 
+                        opacity: [0, 0.4, 0], 
                         y: -150 - Math.random() * 100, 
-                        x: `${Math.random() * 100}%`,
+                        x: (Math.random() - 0.5) * 60,
                         scale: [0.5, 3, 5],
                         rotate: Math.random() * 360
                       }}
@@ -141,10 +142,11 @@ export default function ThoughtShredder() {
                         ease: "easeOut",
                         delay: 0.5 + Math.random() * 0.8
                       }}
-                      className="absolute bottom-0 rounded-full bg-[#111111] blur-[4px]"
+                      className="absolute bottom-0 rounded-full bg-[#111111] blur-[6px]"
                       style={{ 
                         width: size, 
                         height: size,
+                        left: `${Math.random() * 100}%`
                       }}
                     />
                   );
