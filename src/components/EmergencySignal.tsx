@@ -227,7 +227,7 @@ export default function EmergencySignal() {
                 onTouchEnd={handlePressEnd}
                 className={`relative w-44 h-44 rounded-full flex flex-col items-center justify-center transition-all duration-300 select-none cursor-pointer overflow-hidden ${
                   status === "sending"
-                    ? "bg-beige-100 border border-beige-300 dark:bg-beige-950/60 dark:border-beige-800 shadow-[0_0_40px_rgba(var(--color-beige-400),0.3)]"
+                    ? "bg-sage-100 border border-sage-300 dark:bg-sage-950/60 dark:border-sage-800 shadow-[0_0_40px_rgba(var(--color-sage-400),0.3)]"
                     : status === "success"
                     ? "bg-sage-600 text-white shadow-[0_0_50px_rgba(var(--color-sage-500),0.6)]"
                     : status === "error"
@@ -265,7 +265,7 @@ export default function EmergencySignal() {
 
                 {status === "sending" && (
                   <>
-                    <Loader className="w-12 h-12 animate-spin text-beige-600 dark:text-beige-400 mb-2 drop-shadow-sm" />
+                    <Loader className="w-12 h-12 animate-spin text-sage-600 dark:text-sage-400 mb-2 drop-shadow-sm" />
                     <span className="text-[11px] font-bold tracking-widest uppercase text-foreground/60">Senden...</span>
                   </>
                 )}

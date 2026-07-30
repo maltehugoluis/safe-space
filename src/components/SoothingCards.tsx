@@ -69,7 +69,7 @@ export default function SoothingCards() {
               <span className="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-sage-400">
                 Lies das, wenn...
               </span>
-              <Heart className="w-4 h-4 text-beige-500 opacity-60 group-hover:scale-110 transition-transform" />
+              <Heart className="w-4 h-4 text-sage-500 opacity-60 group-hover:scale-110 transition-transform" />
             </div>
             <h3 className="text-base font-semibold text-foreground/90 pr-6">
               ... {letter.trigger}
@@ -133,7 +133,7 @@ export default function SoothingCards() {
                   <FileText className="w-3 h-3" />
                   Für dich geschrieben
                 </span>
-                <span className="flex items-center gap-0.5 text-beige-600 dark:text-beige-400 font-semibold">
+                <span className="flex items-center gap-0.5 text-sage-600 dark:text-sage-400 font-semibold">
                   In Liebe ❤️
                 </span>
               </div>

@@ -272,7 +272,7 @@ export default function MemoryGallery() {
                 </p>
 
                 <div className="flex justify-end mt-2">
-                  <span className="text-[10px] text-beige-600 dark:text-beige-400 font-bold flex items-center gap-1">
+                  <span className="text-[10px] text-sage-600 dark:text-sage-400 font-bold flex items-center gap-1">
                     <Heart className="w-3.5 h-3.5 fill-current" />
                     Für dich festgehalten
                   </span>

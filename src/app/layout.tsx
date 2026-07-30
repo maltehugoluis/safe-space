@@ -49,7 +49,7 @@ export default function RootLayout({
             aria-hidden="true" 
           />
           <div 
-            className="ambient-glow bg-beige-300 dark:bg-beige-700 bottom-[-150px] right-[-100px]" 
+            className="ambient-glow bg-sage-300 dark:bg-sage-700 bottom-[-150px] right-[-100px]" 
             aria-hidden="true" 
           />
 

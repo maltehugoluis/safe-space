@@ -141,7 +141,7 @@ export default function Home() {
           onClick={() => setActiveTab("hilfe")}
           className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
             activeTab === "hilfe"
-              ? "text-beige-700 dark:text-beige-300 bg-beige-50 dark:bg-beige-950/20"
+              ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/20"
               : "text-foreground/50 hover:text-foreground/80"
           }`}
         >

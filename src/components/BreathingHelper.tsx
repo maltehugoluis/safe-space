@@ -159,7 +159,7 @@ export default function BreathingHelper() {
             currentStep?.action === "ein"
               ? "bg-sage-100 border-sage-300 text-sage-800 dark:bg-sage-900/60 dark:border-sage-700 dark:text-sage-300"
               : currentStep?.action === "halt"
-              ? "bg-beige-100 border-beige-300 text-beige-800 dark:bg-beige-900/60 dark:border-beige-800 dark:text-beige-300"
+              ? "bg-sage-100 border-sage-300 text-sage-800 dark:bg-sage-900/60 dark:border-sage-800 dark:text-sage-300"
               : "bg-sage-50 border-sage-200 text-sage-700 dark:bg-sage-950/60 dark:border-sage-900 dark:text-sage-400"
           }`}
         >
@@ -212,7 +212,7 @@ export default function BreathingHelper() {
           onClick={handleStartStop}
           className={`px-8 py-3 rounded-full font-medium flex items-center gap-2 shadow-sm transition-all hover:scale-105 active:scale-95 ${
             isPlaying
-              ? "bg-beige-600 text-white hover:bg-beige-700"
+              ? "bg-sage-600 text-white hover:bg-sage-700"
               : "bg-sage-600 text-white hover:bg-sage-700"
           }`}
         >

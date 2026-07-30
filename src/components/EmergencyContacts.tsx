@@ -125,7 +125,7 @@ export default function EmergencyContacts() {
     <div className="w-full flex flex-col gap-4">
       <div className="flex flex-col gap-1 mb-2">
         <h2 className="text-sm font-semibold tracking-wide text-foreground/85 flex items-center gap-1.5">
-          <ShieldAlert className="w-4 h-4 text-beige-600 dark:text-beige-400" />
+          <ShieldAlert className="w-4 h-4 text-sage-600 dark:text-sage-400" />
           Wichtige Kontakte
         </h2>
         <p className="text-xs text-foreground/60 leading-relaxed">

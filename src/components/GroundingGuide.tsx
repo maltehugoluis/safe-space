@@ -30,7 +30,7 @@ export default function GroundingGuide() {
     },
     {
       number: 4,
-      icon: <Fingerprint className="w-6 h-6 text-beige-600 dark:text-beige-400" />,
+      icon: <Fingerprint className="w-6 h-6 text-sage-600 dark:text-sage-400" />,
       title: "4 Dinge spüren",
       instruction: "Spüre in deinen Körper und deine Umgebung hinein. Finde 4 Dinge, die du anfassen oder körperlich wahrnehmen kannst.",
       placeholder: "z.B. den Stoff deines T-Shirts, die Tischplatte, die Luft auf deiner Haut...",
@@ -46,7 +46,7 @@ export default function GroundingGuide() {
     },
     {
       number: 2,
-      icon: <Activity className="w-6 h-6 text-beige-600 dark:text-beige-400" />,
+      icon: <Activity className="w-6 h-6 text-sage-600 dark:text-sage-400" />,
       title: "2 Dinge riechen",
       instruction: "Atme tief durch die Nase ein. Versuche, 2 verschiedene Gerüche in deiner Umgebung wahrzunehmen.",
       placeholder: "z.B. Kaffeeduft, frische Wäsche, den Geruch von Regen...",

@@ -36,7 +36,7 @@ const DEFAULT_ACHIEVEMENTS = [
 const MOODS = [
   { label: "Schwer", emoji: "🌧️", color: "bg-blue-100 border-blue-200 dark:bg-blue-950/30 dark:border-blue-900" },
   { label: "Trüb", emoji: "☁️", color: "bg-slate-100 border-slate-200 dark:bg-slate-900/30 dark:border-slate-800" },
-  { label: "Ganz okay", emoji: "⛅", color: "bg-beige-100 border-beige-200 dark:bg-beige-950/30 dark:border-beige-900" },
+  { label: "Ganz okay", emoji: "⛅", color: "bg-sage-100 border-sage-200 dark:bg-sage-950/30 dark:border-sage-900" },
   { label: "Gut", emoji: "☀️", color: "bg-sage-100 border-sage-200 dark:bg-sage-950/30 dark:border-sage-900" },
   { label: "Geborgen", emoji: "✨", color: "bg-yellow-50 border-yellow-100 dark:bg-yellow-950/20 dark:border-yellow-900" },
 ];
@@ -512,7 +512,7 @@ export default function JournalTracker() {
         <div className="flex justify-between items-start">
           <div>
             <h2 className="text-sm font-bold text-foreground/85 flex items-center gap-1.5">
-              <CheckSquare className="w-4 h-4 text-beige-600 dark:text-beige-400" /> Deine Erfolge des Tages
+              <CheckSquare className="w-4 h-4 text-sage-600 dark:text-sage-400" /> Deine Erfolge des Tages
             </h2>
             <p className="text-xs text-foreground/50 leading-relaxed mt-0.5">
               Jede Kleinigkeit ist heute ein Sieg. Du machst das super.
@@ -629,7 +629,7 @@ export default function JournalTracker() {
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px] text-foreground/50 font-semibold">{entry.timestamp}</span>
                       {entry.user_id && user && entry.user_id !== user.id && (
-                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-beige-100 text-beige-800 dark:bg-beige-950/40 dark:text-beige-400 font-bold border border-beige-200 dark:border-beige-800 flex items-center gap-0.5">
+                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-sage-100 text-sage-800 dark:bg-sage-950/40 dark:text-sage-400 font-bold border border-sage-200 dark:border-sage-800 flex items-center gap-0.5">
                           <UserCheck className="w-2.5 h-2.5" />
                           Partner
                         </span>
