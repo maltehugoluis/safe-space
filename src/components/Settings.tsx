@@ -13,6 +13,9 @@ type AdditionalPartner = {
 
 type Profile = {
   id: string;
+  email: string;
+  app_mode: "receiver" | "supporter";
+  linked_user_email?: string | null;
   user_name: string;
   partner_name: string;
   partner_phone: string;
@@ -42,6 +45,8 @@ export default function Settings() {
   const [partnerName, setPartnerName] = useState("");
   const [partnerPhone, setPartnerPhone] = useState("");
   const [additionalPartners, setAdditionalPartners] = useState<AdditionalPartner[]>([]);
+  const [appMode, setAppMode] = useState<"receiver" | "supporter">("receiver");
+  const [linkedUserEmail, setLinkedUserEmail] = useState("");
 
   useEffect(() => {
     loadProfile();
@@ -68,6 +73,8 @@ export default function Settings() {
         setPartnerName(data.partner_name || "");
         setPartnerPhone(data.partner_phone || "");
         setAdditionalPartners(data.additional_partners || []);
+        setAppMode(data.app_mode || "receiver");
+        setLinkedUserEmail(data.linked_user_email || "");
       }
     } catch (err) {
       console.error("Error loading profile:", err);
@@ -110,6 +117,8 @@ export default function Settings() {
         partner_name: partnerName.trim(),
         partner_phone: partnerPhone.trim(),
         additional_partners: validPartners,
+        app_mode: appMode,
+        linked_user_email: linkedUserEmail.trim() || null,
       };
 
       const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
@@ -178,6 +187,71 @@ export default function Settings() {
 
       <form onSubmit={handleSave} className="flex flex-col gap-8">
         
+        {/* App Mode Switcher */}
+        <section className="bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col gap-4">
+          <h3 className="text-sm font-bold text-foreground/80 flex items-center gap-1.5 border-b border-border pb-2">
+            <SettingsIcon className="w-4 h-4 text-sage-500" /> App-Modus
+          </h3>
+          
+          <div className="flex flex-col gap-3">
+            <p className="text-xs text-foreground/60 leading-relaxed mb-1">
+              Wer bist du? Nutzt du die App für dich selbst, oder möchtest du jemanden unterstützen?
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setAppMode("receiver")}
+                className={`flex-1 py-3 px-2 rounded-xl text-xs font-semibold transition-all border flex flex-col items-center gap-1 ${
+                  appMode === "receiver" 
+                    ? "bg-sage-600 border-sage-600 text-white shadow-sm" 
+                    : "bg-background border-border text-foreground/60 hover:border-sage-300"
+                }`}
+              >
+                <Heart className={`w-4 h-4 ${appMode === "receiver" ? "text-white" : ""}`} />
+                Ich suche einen Safe Space
+              </button>
+              <button
+                type="button"
+                onClick={() => setAppMode("supporter")}
+                className={`flex-1 py-3 px-2 rounded-xl text-xs font-semibold transition-all border flex flex-col items-center gap-1 ${
+                  appMode === "supporter" 
+                    ? "bg-sage-600 border-sage-600 text-white shadow-sm" 
+                    : "bg-background border-border text-foreground/60 hover:border-sage-300"
+                }`}
+              >
+                <Plus className={`w-4 h-4 ${appMode === "supporter" ? "text-white" : ""}`} />
+                Ich unterstütze jemanden
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {appMode === "supporter" && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="pt-4 mt-2 border-t border-border flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold text-foreground/60">E-Mail-Adresse der Person, die du unterstützt</label>
+                    <input
+                      type="email"
+                      required={appMode === "supporter"}
+                      value={linkedUserEmail}
+                      onChange={(e) => setLinkedUserEmail(e.target.value)}
+                      placeholder="partner@example.com"
+                      className="w-full text-sm p-3 rounded-xl border border-border bg-background focus:outline-none focus:border-sage-500 focus:ring-1 focus:ring-sage-500"
+                    />
+                    <p className="text-[10px] text-foreground/50 mt-1">
+                      Die Person muss mit dieser E-Mail in der App registriert sein. Du kannst dann Briefe und Nudges an sie senden.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </section>
+
         {/* Personal Details */}
         <section className="bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col gap-4">
           <h3 className="text-sm font-bold text-foreground/80 flex items-center gap-1.5 border-b border-border pb-2">

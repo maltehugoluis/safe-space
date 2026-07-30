@@ -8,6 +8,9 @@ import { Heart, Loader, ArrowRight, ArrowLeft, Check, Lock, ShieldAlert, Sparkle
 
 type Profile = {
   id: string;
+  email: string;
+  app_mode: "receiver" | "supporter";
+  linked_user_email?: string | null;
   user_name: string;
   partner_name: string;
   partner_phone: string;
@@ -181,6 +184,8 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     try {
       const newProfile = {
         id: user.id,
+        email: user.email || "",
+        app_mode: "receiver" as const,
         user_name: userName.trim(),
         partner_name: partnerName.trim(),
         partner_phone: partnerPhone.trim(),

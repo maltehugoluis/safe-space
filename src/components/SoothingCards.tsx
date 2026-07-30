@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Heart, RefreshCw, X, FileText } from "lucide-react";
+
+import { supabase } from "@/lib/supabase";
 
 type Letter = {
   id: string;
@@ -10,38 +12,38 @@ type Letter = {
   title: string;
   preview: string;
   content: string;
-  category: "calm" | "love" | "worth";
 };
-
-const LETTERS: Letter[] = [
-  {
-    id: "overwhelmed",
-    category: "calm",
-    trigger: "du Überforderung spürst",
-    title: "Lies das, wenn alles zu viel wird.",
-    preview: "Schließe kurz die Augen. Du musst jetzt gerade gar nichts tun...",
-    content: "Hey, mein Schatz. Wenn du das hier liest, fühlt sich die Welt wahrscheinlich gerade laut, schwer und überwältigend an. Das ist okay. Setz dich kurz hin, lass deine Schultern sinken und atme einmal tief durch. Du musst jetzt in diesem Moment absolut nichts lösen, keine Probleme klären und keine Erwartungen erfüllen. Die Welt darf kurz warten. Ich bin stolz auf dich, dass du da bist, genau so wie du bist. Nimm dir alle Zeit der Welt. Ich bin für dich da.",
-  },
-  {
-    id: "worthless",
-    category: "worth",
-    trigger: "du dich wertlos fühlst",
-    title: "Lies das, wenn Zweifel kommen.",
-    preview: "Du bist so viel mehr als deine Gedanken oder deine Produktivität...",
-    content: "Hallo mein Herz. Deine Gedanken flüstern dir gerade vielleicht ein, dass du nicht genug bist oder dass du eine Last wärst. Bitte hör ihnen nicht zu. Sie lügen. Du bist für mich ein wundervoller, wertvoller Mensch – nicht wegen dem, was du leistest, sondern einfach weil es dich gibt. Deine Wärme, dein Lachen und dein ganzes Wesen machen diese Welt so viel schöner. Du bist genug. Gestern, heute und morgen. Vergiss das bitte nie.",
-  },
-  {
-    id: "powerless",
-    category: "calm",
-    trigger: "du keine Kraft hast",
-    title: "Lies das, wenn das Aufstehen schwerfällt.",
-    preview: "Es ist vollkommen in Ordnung, heute langsam zu machen...",
-    content: "Guten Morgen oder einfach Hallo. Wenn dir heute die Kraft fehlt, überhaupt aus dem Bett aufzustehen oder den Tag zu beginnen: Das ist okay. Manche Tage sind dazu da, um einfach nur zu überstehen. Du musst die Welt heute nicht erobern. Es reicht völlig, wenn du nur atmest, ein Glas Wasser trinkst und liegst. Jede noch so kleine Sekunde zählt. Ich schicke dir ganz viel Ruhe und Wärme. Mach dir keinen Druck, ich bin an deiner Seite.",
-  },
-];
 
 export default function SoothingCards() {
   const [selectedLetter, setSelectedLetter] = useState<Letter | null>(null);
+  const [letters, setLetters] = useState<Letter[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCards();
+  }, []);
+
+  const fetchCards = async () => {
+    if (!supabase) return;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+
+      // We need the user's email to fetch cards directed to them
+      const { data, error } = await supabase
+        .from("soothing_cards")
+        .select("*")
+        .eq("receiver_email", session.user.email)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setLetters(data || []);
+    } catch (err) {
+      console.error("Error fetching cards:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -57,9 +59,16 @@ export default function SoothingCards() {
 
       {/* Cards list */}
       <div className="flex flex-col gap-3">
-        {LETTERS.map((letter) => (
-          <motion.button
-            key={letter.id}
+        {loading ? (
+          <div className="text-center p-4"><RefreshCw className="w-5 h-5 animate-spin text-sage-500 mx-auto" /></div>
+        ) : letters.length === 0 ? (
+          <div className="text-center p-6 bg-card border border-dashed border-border rounded-2xl">
+            <p className="text-xs text-foreground/50">Es gibt noch keine Briefe für dich.</p>
+          </div>
+        ) : (
+          letters.map((letter) => (
+            <motion.button
+              key={letter.id}
             onClick={() => setSelectedLetter(letter)}
             className="w-full text-left p-5 rounded-2xl border border-border bg-card hover:border-sage-300 dark:hover:border-sage-800 transition-all flex flex-col gap-2 relative overflow-hidden group shadow-sm"
             whileHover={{ y: -1 }}
@@ -78,7 +87,8 @@ export default function SoothingCards() {
               {letter.preview}
             </p>
           </motion.button>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Expanded letter modal */}

@@ -13,11 +13,51 @@ import EmergencyContacts from "@/components/EmergencyContacts";
 import Settings from "@/components/Settings";
 import ThoughtShredder from "@/components/ThoughtShredder";
 import GoodMomentsJar from "@/components/GoodMomentsJar";
+import SupporterNudge from "@/components/SupporterNudge";
+import SupporterLetters from "@/components/SupporterLetters";
+import { supabase } from "@/lib/supabase";
 
-type Tab = "ruhe" | "safespace" | "journal" | "hilfe" | "settings";
+type Tab = "ruhe" | "safespace" | "journal" | "hilfe" | "settings" | "nudge" | "briefe";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("ruhe");
+  const [appMode, setAppMode] = useState<"receiver" | "supporter">("receiver");
+  const [linkedEmail, setLinkedEmail] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      if (!supabase) return;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) return;
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("app_mode, linked_user_email")
+          .eq("id", session.user.id)
+          .maybeSingle();
+
+        if (error) throw error;
+        if (data) {
+          setAppMode(data.app_mode || "receiver");
+          setLinkedEmail(data.linked_user_email || "");
+          if (data.app_mode === "supporter") {
+            setActiveTab("nudge");
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching profile mode:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  if (loading) {
+    return <div className="flex-1 flex items-center justify-center"><div className="w-6 h-6 border-2 border-sage-500 border-t-transparent rounded-full animate-spin" /></div>;
+  }
 
   return (
     <div className="flex-1 flex flex-col gap-6">
@@ -29,7 +69,9 @@ export default function Home() {
           transition={{ duration: 0.8 }}
           className="flex justify-center items-center gap-1.5"
         >
-          <span className="text-xs uppercase tracking-widest text-foreground/50 font-bold">Rückzugsort</span>
+          <span className="text-xs uppercase tracking-widest text-foreground/50 font-bold">
+            {appMode === "supporter" ? "Supporter-Modus" : "Rückzugsort"}
+          </span>
         </motion.div>
         <motion.h1
           initial={{ opacity: 0 }}
@@ -37,7 +79,7 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-2xl font-bold tracking-tight text-foreground/90 font-serif"
         >
-          Schön, dass du da bist. 🤍
+          {appMode === "supporter" ? "Unterstütze deine Lieblingsperson" : "Schön, dass du da bist. 🤍"}
         </motion.h1>
       </header>
 
@@ -101,6 +143,15 @@ export default function Home() {
               </div>
             )}
 
+            {/* SUPPORTER TABS */}
+            {activeTab === "nudge" && appMode === "supporter" && (
+              <SupporterNudge linkedEmail={linkedEmail} />
+            )}
+            
+            {activeTab === "briefe" && appMode === "supporter" && (
+              <SupporterLetters linkedEmail={linkedEmail} />
+            )}
+
             {activeTab === "settings" && (
               <div className="flex flex-col gap-8">
                 <Settings />
@@ -112,57 +163,89 @@ export default function Home() {
 
       {/* Floating Bottom Nav Bar */}
       <nav className="fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-card/85 backdrop-blur-md border border-border rounded-full p-2.5 shadow-xl z-40 flex justify-around items-center">
-        {/* Ruhe / Grounding */}
-        <button
-          onClick={() => setActiveTab("ruhe")}
-          className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
-            activeTab === "ruhe"
-              ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
-              : "text-foreground/50 hover:text-foreground/80"
-          }`}
-        >
-          <Wind className="w-5 h-5" />
-          <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Ruhe</span>
-        </button>
+        {appMode === "receiver" ? (
+          <>
+            {/* Ruhe / Grounding */}
+            <button
+              onClick={() => setActiveTab("ruhe")}
+              className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
+                activeTab === "ruhe"
+                  ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
+                  : "text-foreground/50 hover:text-foreground/80"
+              }`}
+            >
+              <Wind className="w-5 h-5" />
+              <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Ruhe</span>
+            </button>
 
-        {/* Safe Space / Letters */}
-        <button
-          onClick={() => setActiveTab("safespace")}
-          className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
-            activeTab === "safespace"
-              ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
-              : "text-foreground/50 hover:text-foreground/80"
-          }`}
-        >
-          <Sparkles className="w-5 h-5" />
-          <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Safe Space</span>
-        </button>
+            {/* Safe Space / Letters */}
+            <button
+              onClick={() => setActiveTab("safespace")}
+              className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
+                activeTab === "safespace"
+                  ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
+                  : "text-foreground/50 hover:text-foreground/80"
+              }`}
+            >
+              <Sparkles className="w-5 h-5" />
+              <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Safe Space</span>
+            </button>
 
-        {/* Tagebuch / Journal */}
-        <button
-          onClick={() => setActiveTab("journal")}
-          className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
-            activeTab === "journal"
-              ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
-              : "text-foreground/50 hover:text-foreground/80"
-          }`}
-        >
-          <BookOpen className="w-5 h-5" />
-          <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Tagebuch</span>
-        </button>
+            {/* Tagebuch / Journal */}
+            <button
+              onClick={() => setActiveTab("journal")}
+              className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
+                activeTab === "journal"
+                  ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
+                  : "text-foreground/50 hover:text-foreground/80"
+              }`}
+            >
+              <BookOpen className="w-5 h-5" />
+              <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Tagebuch</span>
+            </button>
 
-        {/* Emergency help */}
-        <button
-          onClick={() => setActiveTab("hilfe")}
-          className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
-            activeTab === "hilfe"
-              ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/20"
-              : "text-foreground/50 hover:text-foreground/80"
-          }`}
-        >
-          <ShieldAlert className="w-5 h-5" />
-          <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Hilfe</span>
-        </button>
+            {/* Emergency help */}
+            <button
+              onClick={() => setActiveTab("hilfe")}
+              className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
+                activeTab === "hilfe"
+                  ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/20"
+                  : "text-foreground/50 hover:text-foreground/80"
+              }`}
+            >
+              <ShieldAlert className="w-5 h-5" />
+              <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Hilfe</span>
+            </button>
+          </>
+        ) : (
+          <>
+            {/* Supporter Nudge */}
+            <button
+              onClick={() => setActiveTab("nudge")}
+              className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
+                activeTab === "nudge"
+                  ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
+                  : "text-foreground/50 hover:text-foreground/80"
+              }`}
+            >
+              <Heart className="w-5 h-5" />
+              <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Nudge</span>
+            </button>
+
+            {/* Supporter Letters */}
+            <button
+              onClick={() => setActiveTab("briefe")}
+              className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
+                activeTab === "briefe"
+                  ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/40"
+                  : "text-foreground/50 hover:text-foreground/80"
+              }`}
+            >
+              <Sparkles className="w-5 h-5" />
+              <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Briefe</span>
+            </button>
+          </>
+        )}
 
         {/* Settings */}
         <button
