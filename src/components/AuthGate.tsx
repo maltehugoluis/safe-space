@@ -626,10 +626,6 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   return (
     <div className={`theme-${profile?.favorite_color || "sage"} min-h-screen flex flex-col bg-background text-foreground transition-colors duration-500`}>
       {children}
-      {/* Diagnostic Badge */}
-      <div className="fixed top-2 right-2 z-50 bg-black/60 text-white text-[9px] px-2.5 py-1 rounded-full font-mono pointer-events-none">
-        Theme: {profile?.favorite_color || "sage (default)"} | User: {profile?.user_name || "none"}
-      </div>
     </div>
   );
 }
