@@ -46,7 +46,7 @@ export default function RootLayout({
         <div className="flex flex-col min-h-screen w-full relative">
           <AuthGate>
             {/* Isolated Background Container to prevent scroll overflow safely */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
               {/* Soothing Ambient Glows */}
               <div 
                 className="ambient-glow bg-sage-300 dark:bg-sage-600 top-[-100px] left-[-100px]" 
