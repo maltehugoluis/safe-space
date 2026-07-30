@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Volume2, VolumeX, CloudRain, Waves, Flame, Radio, Play, Square } from "lucide-react";
+import { Volume2, VolumeX, CloudRain, CloudDrizzle, Flame, Wind, Play, Square } from "lucide-react";
 import { motion } from "framer-motion";
 
-type SoundType = "rain" | "waves" | "fire" | "wind";
+type SoundType = "rain" | "prasseln" | "fire" | "wind";
 
 interface SoundTrack {
   id: SoundType;
@@ -21,25 +21,25 @@ export default function SoundscapeGenerator() {
     {
       id: "rain",
       name: "Sanfter Regen",
-      subtitle: "Echter Landregen",
+      subtitle: "Leichter Landregen",
       icon: <CloudRain className="w-5 h-5 text-sage-600 dark:text-sage-400" />,
       active: false,
       volume: 0.6,
       url: "https://actions.google.com/sounds/v1/weather/light_rain.ogg",
     },
     {
-      id: "waves",
-      name: "Meeresrauschen",
-      subtitle: "Sanfte Brandung",
-      icon: <Waves className="w-5 h-5 text-sage-600 dark:text-sage-400" />,
+      id: "prasseln",
+      name: "Gemütliches Prasseln",
+      subtitle: "Geborgenes Rauschen",
+      icon: <CloudDrizzle className="w-5 h-5 text-sage-600 dark:text-sage-400" />,
       active: false,
       volume: 0.6,
-      url: "https://actions.google.com/sounds/v1/water/waves_crashing.ogg",
+      url: "https://actions.google.com/sounds/v1/weather/rain_on_car_heavy.ogg",
     },
     {
       id: "fire",
       name: "Lagerfeuer",
-      subtitle: "Kamin-Knistern",
+      subtitle: "Warmes Knistern",
       icon: <Flame className="w-5 h-5 text-sage-600 dark:text-sage-400" />,
       active: false,
       volume: 0.6,
@@ -48,11 +48,11 @@ export default function SoundscapeGenerator() {
     {
       id: "wind",
       name: "Tiefe Ruhe",
-      subtitle: "Sanfter Wind",
-      icon: <Radio className="w-5 h-5 text-sage-600 dark:text-sage-400" />,
+      subtitle: "Sanfter Naturwind",
+      icon: <Wind className="w-5 h-5 text-sage-600 dark:text-sage-400" />,
       active: false,
       volume: 0.6,
-      url: "https://actions.google.com/sounds/v1/ambiences/wind_soft.ogg",
+      url: "https://actions.google.com/sounds/v1/weather/wind.ogg",
     },
   ]);
 
