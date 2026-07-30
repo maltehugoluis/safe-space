@@ -18,6 +18,7 @@ export default function SupporterLetters({ linkedEmail }: { linkedEmail: string 
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editingCard, setEditingCard] = useState<SoothingCard | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Form states
   const [trigger, setTrigger] = useState("");
@@ -74,11 +75,12 @@ export default function SupporterLetters({ linkedEmail }: { linkedEmail: string 
     setIsEditing(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!supabase || !confirm("Wirklich löschen?")) return;
+  const handleDeleteConfirm = async () => {
+    if (!supabase || !deletingId) return;
     try {
-      await supabase.from("soothing_cards").delete().eq("id", id);
-      setCards(cards.filter(c => c.id !== id));
+      await supabase.from("soothing_cards").delete().eq("id", deletingId);
+      setCards(cards.filter(c => c.id !== deletingId));
+      setDeletingId(null);
     } catch (err) {
       console.error("Error deleting card:", err);
     }
@@ -257,7 +259,11 @@ export default function SupporterLetters({ linkedEmail }: { linkedEmail: string 
                       <button onClick={() => handleOpenEdit(card)} className="p-1.5 rounded-lg text-foreground/40 hover:text-foreground hover:bg-background transition-colors">
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      <button onClick={() => handleDelete(card.id)} className="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+                      <button
+                        onClick={() => setDeletingId(card.id)}
+                        className="p-1.5 text-rose-400 hover:text-rose-600 transition-colors"
+                        title="Löschen"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -267,6 +273,50 @@ export default function SupporterLetters({ linkedEmail }: { linkedEmail: string 
                 </div>
               ))
             )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Delete Confirmation Modal */}
+      <AnimatePresence>
+        {deletingId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-background/60 backdrop-blur-sm px-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-card w-full max-w-sm rounded-3xl border border-border shadow-2xl p-6 flex flex-col gap-4"
+            >
+              <div className="flex flex-col gap-2 text-center">
+                <div className="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center mx-auto mb-2 text-rose-500">
+                  <Trash2 className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold">Brief löschen?</h3>
+                <p className="text-sm text-foreground/60 leading-relaxed">
+                  Bist du sicher, dass du diesen Brief löschen möchtest? Er wird sofort bei deiner Freundin entfernt und kann nicht wiederhergestellt werden.
+                </p>
+              </div>
+
+              <div className="flex gap-3 mt-2">
+                <button
+                  onClick={() => setDeletingId(null)}
+                  className="flex-1 py-3 rounded-xl font-bold text-sm bg-muted text-foreground/70 hover:bg-muted/80 transition-colors"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  className="flex-1 py-3 rounded-xl font-bold text-sm bg-rose-500 text-white hover:bg-rose-600 shadow-sm transition-colors"
+                >
+                  Löschen
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
