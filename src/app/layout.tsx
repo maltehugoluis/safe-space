@@ -43,17 +43,20 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <body className="antialiased selection:bg-sage-200 selection:text-sage-900">
-        <div className="flex flex-col min-h-screen w-full overflow-x-hidden relative">
+        <div className="flex flex-col min-h-screen w-full relative">
           <AuthGate>
-            {/* Soothing Ambient Glows */}
-            <div 
-              className="ambient-glow bg-sage-300 dark:bg-sage-600 top-[-100px] left-[-100px]" 
-              aria-hidden="true" 
-            />
-            <div 
-              className="ambient-glow bg-sage-300 dark:bg-sage-700 bottom-[-150px] right-[-100px]" 
-              aria-hidden="true" 
-            />
+            {/* Isolated Background Container to prevent scroll overflow safely */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+              {/* Soothing Ambient Glows */}
+              <div 
+                className="ambient-glow bg-sage-300 dark:bg-sage-600 top-[-100px] left-[-100px]" 
+                aria-hidden="true" 
+              />
+              <div 
+                className="ambient-glow bg-sage-300 dark:bg-sage-700 bottom-[-150px] right-[-100px]" 
+                aria-hidden="true" 
+              />
+            </div>
 
             {/* Content Wrapper */}
             <main className="flex-1 flex flex-col relative z-10 w-full max-w-md mx-auto px-4 py-6 pb-24 md:pb-8">
