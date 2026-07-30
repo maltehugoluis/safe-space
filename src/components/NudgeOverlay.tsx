@@ -11,6 +11,11 @@ export default function NudgeOverlay() {
   useEffect(() => {
     checkNudge();
     
+    // Fallback: Poll every 15 seconds in case Realtime fails
+    const pollInterval = setInterval(() => {
+      checkNudge();
+    }, 15000);
+    
     // Set up a real-time subscription for nudges
     if (!supabase) return;
     
@@ -44,6 +49,7 @@ export default function NudgeOverlay() {
     
     const cleanup = setupSubscription();
     return () => {
+      clearInterval(pollInterval);
       cleanup.then(fn => fn && fn());
     };
   }, []);
