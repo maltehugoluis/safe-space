@@ -10,8 +10,9 @@ import MemoryGallery from "@/components/MemoryGallery";
 import JournalTracker from "@/components/JournalTracker";
 import EmergencySignal from "@/components/EmergencySignal";
 import EmergencyContacts from "@/components/EmergencyContacts";
+import Settings from "@/components/Settings";
 
-type Tab = "ruhe" | "safespace" | "journal" | "hilfe";
+type Tab = "ruhe" | "safespace" | "journal" | "hilfe" | "settings";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("ruhe");
@@ -91,6 +92,12 @@ export default function Home() {
                 <EmergencyContacts />
               </div>
             )}
+
+            {activeTab === "settings" && (
+              <div className="flex flex-col gap-8">
+                <Settings />
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -147,6 +154,19 @@ export default function Home() {
         >
           <ShieldAlert className="w-5 h-5" />
           <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Hilfe</span>
+        </button>
+
+        {/* Settings */}
+        <button
+          onClick={() => setActiveTab("settings")}
+          className={`flex flex-col items-center justify-center py-2 px-3.5 rounded-full transition-all relative ${
+            activeTab === "settings"
+              ? "text-sage-700 dark:text-sage-300 bg-sage-50 dark:bg-sage-950/20"
+              : "text-foreground/50 hover:text-foreground/80"
+          }`}
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span className="text-[9px] font-bold mt-1 tracking-wider uppercase">Profil</span>
         </button>
       </nav>
     </div>

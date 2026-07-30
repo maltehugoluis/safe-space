@@ -11,6 +11,7 @@ type Profile = {
   user_name: string;
   partner_name: string;
   partner_phone: string;
+  additional_partners?: { name: string; phone: string }[];
   country: string;
   favorite_color: string;
 };

@@ -90,8 +90,17 @@ export default function EmergencyContacts() {
         isPrimary: true,
       };
 
+      // 3b. Assemble additional partners
+      const additionalContacts: Contact[] = (profile.additional_partners || []).map((p: any) => ({
+        name: p.name,
+        role: "Weitere Vertrauensperson",
+        phone: p.phone,
+        sms: p.phone,
+        isPrimary: true, // Styling them like the primary contact (green)
+      }));
+
       // 4. Map DB hotlines
-      const mappedHotlines: Contact[] = (hotlines || []).map((h) => ({
+      const mappedHotlines: Contact[] = (hotlines || []).map((h: any) => ({
         name: h.name,
         role: h.role,
         phone: h.phone,
@@ -100,9 +109,9 @@ export default function EmergencyContacts() {
       // Combine (if DB hotlines are empty due to error or missing data, fallback to DE defaults for hotlines only)
       if (mappedHotlines.length === 0) {
         const defaultHelplines = DEFAULT_DE_CONTACTS.filter(c => !c.isPrimary);
-        setContacts([primaryContact, ...defaultHelplines]);
+        setContacts([primaryContact, ...additionalContacts, ...defaultHelplines]);
       } else {
-        setContacts([primaryContact, ...mappedHotlines]);
+        setContacts([primaryContact, ...additionalContacts, ...mappedHotlines]);
       }
     } catch (err) {
       console.error("Error loading contacts from database:", err);
