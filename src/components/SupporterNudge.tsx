@@ -68,7 +68,7 @@ export default function SupporterNudge({ linkedEmail }: { linkedEmail: string })
       ) : connectionStatus === "pending" ? (
         <div className="flex flex-col gap-2 mt-4 p-4 bg-card border border-border rounded-2xl w-full max-w-sm">
           <p className="text-sm font-bold text-foreground/80">Warte auf Bestätigung...</p>
-          <p className="text-xs text-foreground/60">Deine Freundin muss dich in den Einstellungen erst zulassen.</p>
+          <p className="text-xs text-foreground/60">Die unterstützte Person muss dich in den Einstellungen erst zulassen.</p>
         </div>
       ) : connectionStatus !== "approved" ? (
         <div className="flex flex-col gap-2 mt-4 p-4 bg-card border border-border rounded-2xl w-full max-w-sm">

@@ -59,7 +59,7 @@ export default function SharedThoughts({ linkedEmail }: { linkedEmail: string })
     setError(null);
     try {
       // Wir holen alle Einträge, die shared = true sind.
-      // Da wir in einer privaten App sind, sind das die Gedanken der Partnerin.
+      // Da wir in einer privaten App sind, sind das die Gedanken der verlinkten Person.
       const { data, error: fetchError } = await supabase
         .from("journal_entries")
         .select("*")
@@ -104,7 +104,7 @@ export default function SharedThoughts({ linkedEmail }: { linkedEmail: string })
           <Loader className="w-8 h-8 text-sage-500 animate-spin" />
           <p className="text-sm font-bold text-foreground/80">Warte auf Bestätigung...</p>
           <p className="text-xs text-foreground/60">
-            Deine Freundin muss deine Anfrage in ihren Einstellungen erst annehmen, bevor du ihre Gedanken sehen kannst.
+            Die unterstützte Person muss deine Anfrage in ihren Einstellungen erst annehmen, bevor du die Gedanken sehen kannst.
           </p>
         </div>
       ) : connectionStatus !== "approved" ? (
@@ -120,7 +120,7 @@ export default function SharedThoughts({ linkedEmail }: { linkedEmail: string })
             Noch keine geteilten Gedanken
           </p>
           <p className="text-xs text-foreground/40">
-            Wenn sie beim Journaling "Möchte ich mit dir teilen" ankreuzt, erscheinen die Einträge hier.
+            Wenn die unterstützte Person beim Journaling "Möchte ich mit dir teilen" ankreuzt, erscheinen die Einträge hier.
           </p>
         </div>
       ) : (

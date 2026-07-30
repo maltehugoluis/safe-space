@@ -153,7 +153,7 @@ export default function SupporterLetters({ linkedEmail }: { linkedEmail: string 
             Lies das, wenn... Briefe
           </h2>
           <p className="text-xs text-foreground/50">
-            Schreibe kleine Aufmunterungen, die sie in der App lesen kann.
+            Schreibe kleine Aufmunterungen, die von der unterstützten Person in der App gelesen werden können.
           </p>
         </div>
         {!isEditing && (
@@ -184,7 +184,7 @@ export default function SupporterLetters({ linkedEmail }: { linkedEmail: string 
 
             <form onSubmit={handleSave} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-foreground/60">Trigger (Wann soll sie das lesen?)</label>
+                <label className="text-xs font-semibold text-foreground/60">Trigger (Wann soll der Brief gelesen werden?)</label>
                 <input
                   type="text"
                   required
@@ -298,7 +298,7 @@ export default function SupporterLetters({ linkedEmail }: { linkedEmail: string 
                 </div>
                 <h3 className="text-lg font-bold">Brief löschen?</h3>
                 <p className="text-sm text-foreground/60 leading-relaxed">
-                  Bist du sicher, dass du diesen Brief löschen möchtest? Er wird sofort bei deiner Freundin entfernt und kann nicht wiederhergestellt werden.
+                  Bist du sicher, dass du diesen Brief löschen möchtest? Er wird sofort bei der unterstützten Person entfernt und kann nicht wiederhergestellt werden.
                 </p>
               </div>
 
